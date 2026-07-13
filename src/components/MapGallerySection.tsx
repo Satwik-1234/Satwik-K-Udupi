@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Download, MessageCircle, Phone, Map, ZoomIn } from 'lucide-react';
+import GradientText from '@/components/ui/GradientText';
 
 // Import all map images
 import controlledReleaseMap from '@/assets/maps/controlled-release-map.jpg';
@@ -121,7 +122,14 @@ const MapGallerySection = () => {
           </motion.div>
           
           <h2 className="text-4xl md:text-5xl font-bold font-display mb-6 tracking-tight">
-            Previous <span className="gradient-text">Work</span>
+            Previous{' '}
+            <GradientText
+              colors={['#213BA3', '#47A2F5', '#D6AE29']}
+              animationSpeed={6}
+              className="text-4xl md:text-5xl font-bold font-display inline-flex"
+            >
+              Work
+            </GradientText>
           </h2>
           
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

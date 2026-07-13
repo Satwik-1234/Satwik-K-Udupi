@@ -2,8 +2,10 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import {
   Waves, Satellite, Camera, Ruler, Code, BarChart3,
-  Layers, Cloud, Zap, ArrowUpRight
+  Layers, Cloud, Zap
 } from 'lucide-react';
+import GradientText from '@/components/ui/GradientText';
+import BorderGlow from '@/components/ui/BorderGlow';
 
 const skillDomains = [
   {
@@ -94,7 +96,14 @@ const SkillsSection = () => {
           </div>
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-4">
-            Specialized <span className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Domains</span>
+            Specialized{' '}
+            <GradientText
+              colors={['#213BA3', '#47A2F5', '#D6AE29']}
+              animationSpeed={6}
+              className="font-bold text-3xl md:text-4xl lg:text-5xl inline-flex"
+            >
+              Domains
+            </GradientText>
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-lg">
             Core competencies in water resource engineering and geospatial technologies
@@ -115,11 +124,24 @@ const SkillsSection = () => {
                 whileHover={{ y: -8 }}
                 className="group relative rounded-2xl overflow-hidden"
               >
-                {/* Gradient border on hover */}
-                <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${domain.gradient} opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
-
+              <BorderGlow
+                borderRadius={16}
+                glowRadius={20}
+                backgroundColor="hsl(var(--card))"
+                colors={domain.gradient.includes('blue') ? ['#3b82f6', '#06b6d4', '#38bdf8'] :
+                        domain.gradient.includes('emerald') ? ['#10b981', '#14b8a6', '#34d399'] :
+                        domain.gradient.includes('violet') ? ['#8b5cf6', '#a78bfa', '#c084fc'] :
+                        domain.gradient.includes('orange') ? ['#f97316', '#f59e0b', '#fbbf24'] :
+                        domain.gradient.includes('red') ? ['#ef4444', '#ec4899', '#f472b6'] :
+                        domain.gradient.includes('pink') ? ['#ec4899', '#f472b6', '#f9a8d4'] :
+                        domain.gradient.includes('indigo') ? ['#6366f1', '#818cf8', '#3b82f6'] :
+                        ['#06b6d4', '#14b8a6', '#38bdf8']}
+                glowIntensity={0.7}
+                fillOpacity={0.25}
+                className="h-full"
+              >
                 {/* Inner card */}
-                <div className="relative m-[1px] rounded-2xl bg-card h-full p-5 flex flex-col">
+                <div className="relative h-full p-5 flex flex-col">
                   {/* Icon */}
                   <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${domain.gradient} bg-opacity-20 flex items-center justify-center mb-4 opacity-80 group-hover:opacity-100 transition-opacity`}>
                     <Icon className="w-5 h-5 text-white" />
@@ -144,6 +166,7 @@ const SkillsSection = () => {
                     ))}
                   </div>
                 </div>
+              </BorderGlow>
               </motion.div>
             );
           })}

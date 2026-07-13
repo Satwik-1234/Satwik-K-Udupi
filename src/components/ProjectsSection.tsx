@@ -1,6 +1,8 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { ChevronRight, MapPin, Calendar, Target, Database, Wrench, BarChart3, CheckCircle2, Layers, ArrowUpRight } from 'lucide-react';
+import GradientText from '@/components/ui/GradientText';
+import BorderGlow from '@/components/ui/BorderGlow';
 
 interface Project {
   title: string;
@@ -206,7 +208,14 @@ const ProjectsSection = () => {
             </motion.div>
             
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 tracking-tight">
-              Featured <span className="gradient-text">Projects</span>
+              Featured{' '}
+              <GradientText
+                colors={['#213BA3', '#47A2F5', '#D6AE29']}
+                animationSpeed={6}
+                className="text-4xl md:text-5xl font-display font-bold inline-flex"
+              >
+                Projects
+              </GradientText>
             </h2>
             
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -405,26 +414,33 @@ const ProjectsSection = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-                  className="group relative glass-card rounded-xl p-6 hover:border-primary/30 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10"
+                  className="group"
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl`} />
-                  
-                  <div className="relative">
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                        {project.shortTitle}
-                      </h4>
-                      <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <BorderGlow
+                    borderRadius={12}
+                    glowRadius={20}
+                    backgroundColor="hsl(var(--card))"
+                    colors={project.color.includes('violet') ? ['#8b5cf6', '#a78bfa', '#c084fc'] : ['#f43f5e', '#ec4899', '#f472b6']}
+                    glowIntensity={0.6}
+                    fillOpacity={0.2}
+                  >
+                    <div className="relative p-6">
+                      <div className="flex items-start justify-between mb-3">
+                        <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                          {project.shortTitle}
+                        </h4>
+                        <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-4">{project.title}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {project.skills.map((skill) => (
+                          <span key={skill} className="px-2 py-1 text-xs rounded-md bg-muted/50 text-muted-foreground">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-4">{project.title}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {project.skills.map((skill) => (
-                        <span key={skill} className="px-2 py-1 text-xs rounded-md bg-muted/50 text-muted-foreground">
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                  </BorderGlow>
                 </motion.div>
               ))}
             </div>

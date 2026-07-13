@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Sun, Moon, Type } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -16,7 +17,7 @@ const navItems: { label: string; href: string; isExternal?: boolean }[] = [
   { label: 'Skills', href: '#skills' },
   { label: 'Certifications', href: '#certifications' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Previous Work', href: '#map-gallery' },
+  { label: 'Previous Work', href: '#previous-work' },
   { label: 'Services', href: '/pravaha-tattva', isExternal: true },
   { label: 'Contact', href: '#contact' },
 ];
@@ -29,6 +30,7 @@ const textSizes = [
 ];
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -64,8 +66,7 @@ const Navbar = () => {
   const handleNavClick = (href: string, isExternal?: boolean) => {
     setIsMobileMenuOpen(false);
     if (isExternal) {
-      // Navigate to top of page
-      window.location.href = href;
+      navigate(href);
       setTimeout(() => window.scrollTo({ top: 0, behavior: 'instant' }), 100);
       return;
     }

@@ -4,6 +4,7 @@ import {
   Mail, MapPin, Linkedin, Phone, MessageCircle,
   ExternalLink, ArrowUpRight, Send, Github
 } from 'lucide-react';
+import GradientText from '@/components/ui/GradientText';
 
 const ContactSection = () => {
   const ref = useRef(null);
@@ -36,7 +37,14 @@ const ContactSection = () => {
             </motion.div>
 
             <h2 className="text-4xl md:text-5xl font-light tracking-tight text-foreground mb-4">
-              Let's <span className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Connect</span>
+              Let's{' '}
+              <GradientText
+                colors={['#213BA3', '#47A2F5', '#D6AE29']}
+                animationSpeed={6}
+                className="font-bold text-4xl md:text-5xl inline-flex"
+              >
+                Connect
+              </GradientText>
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto text-lg">
               Ready to collaborate on GIS, hydrology, or agricultural engineering projects?

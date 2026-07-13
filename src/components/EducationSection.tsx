@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { GraduationCap, Award, BookOpen } from 'lucide-react';
+import GradientText from '@/components/ui/GradientText';
 
 const education = [
   {
@@ -76,7 +77,13 @@ const EducationSection = () => {
           {/* Section Header */}
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-              <span className="gradient-text">Education</span>
+              <GradientText
+                colors={['#213BA3', '#47A2F5', '#D6AE29']}
+                animationSpeed={6}
+                className="text-3xl md:text-4xl font-display font-bold"
+              >
+                Education
+              </GradientText>
             </h2>
             <div className="section-divider" />
           </div>

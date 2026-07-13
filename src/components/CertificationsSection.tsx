@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { Award, Calendar, ArrowRight } from 'lucide-react';
+import GradientText from '@/components/ui/GradientText';
 
 interface Certification {
   name: string;
@@ -78,7 +79,14 @@ const CertificationsSection = () => {
             </motion.div>
             
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 tracking-tight">
-              Licenses & <span className="gradient-text">Certifications</span>
+              Licenses &{' '}
+              <GradientText
+                colors={['#213BA3', '#47A2F5', '#D6AE29']}
+                animationSpeed={6}
+                className="text-4xl md:text-5xl font-display font-bold inline-flex"
+              >
+                Certifications
+              </GradientText>
             </h2>
             
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">

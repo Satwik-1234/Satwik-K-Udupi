@@ -1,6 +1,8 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { MapPin, Droplets, Layers, Mountain, ArrowUpRight, Sparkles } from 'lucide-react';
+import GradientText from '@/components/ui/GradientText';
+import BorderGlow from '@/components/ui/BorderGlow';
 
 const focus = [
   { 
@@ -48,9 +50,13 @@ const AboutSection = () => {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-foreground mb-6">
             Agricultural Engineer with
             <br />
-            <span className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <GradientText
+              colors={['#213BA3', '#47A2F5', '#D6AE29']}
+              animationSpeed={6}
+              className="font-bold text-4xl md:text-5xl lg:text-6xl"
+            >
               Water Resource Expertise
-            </span>
+            </GradientText>
           </h2>
           <p className="text-muted-foreground text-lg md:text-xl font-light max-w-2xl leading-relaxed">
             Combining field expertise with advanced geospatial tools to deliver data-driven solutions 
@@ -68,25 +74,38 @@ const AboutSection = () => {
               transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
               className="group relative"
             >
-              <div className="relative p-8 glass-card hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10 transition-all duration-500 h-full overflow-hidden">
-                {/* Gradient hover effect */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-                
-                <div className="relative">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.gradient} p-[1px] mb-6`}>
-                    <div className="w-full h-full rounded-2xl bg-card flex items-center justify-center">
-                      <item.icon className="w-6 h-6 text-foreground" />
-                    </div>
-                  </div>
+              <BorderGlow
+                borderRadius={16}
+                glowRadius={30}
+                backgroundColor="hsl(var(--card))"
+                colors={[
+                  item.gradient.includes('blue') ? '#3b82f6' : item.gradient.includes('emerald') ? '#10b981' : '#8b5cf6',
+                  item.gradient.includes('cyan') ? '#06b6d4' : item.gradient.includes('teal') ? '#14b8a6' : '#a78bfa',
+                  '#38bdf8'
+                ]}
+                glowIntensity={0.8}
+                fillOpacity={0.3}
+              >
+                <div className="relative p-8 h-full overflow-hidden">
+                  {/* Gradient hover effect */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
                   
-                  <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {item.description}
-                  </p>
+                  <div className="relative">
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.gradient} p-[1px] mb-6`}>
+                      <div className="w-full h-full rounded-2xl bg-card flex items-center justify-center">
+                        <item.icon className="w-6 h-6 text-foreground" />
+                      </div>
+                    </div>
+                    
+                    <h3 className="text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </BorderGlow>
             </motion.div>
           ))}
         </div>
