@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-const navItems = [
+const navItems: { label: string; href: string; isExternal?: boolean }[] = [
   { label: 'About', href: '#about' },
   { label: 'Experience', href: '#experience' },
   { label: 'Education', href: '#education' },
@@ -108,7 +108,7 @@ const Navbar = () => {
               {navItems.map((item) => (
                 <button
                   key={item.label}
-                  onClick={() => handleNavClick(item.href, (item as any).isExternal)}
+                  onClick={() => handleNavClick(item.href, item.isExternal)}
                   className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors"
                 >
                   {item.label}
@@ -178,7 +178,7 @@ const Navbar = () => {
                 {navItems.map((item) => (
                   <button
                     key={item.label}
-                    onClick={() => handleNavClick(item.href, (item as any).isExternal)}
+                    onClick={() => handleNavClick(item.href, item.isExternal)}
                     className="px-4 py-3 text-left font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors"
                   >
                     {item.label}

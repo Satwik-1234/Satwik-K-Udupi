@@ -142,6 +142,7 @@ const ContactSection = () => {
             className="flex flex-wrap justify-center gap-3"
           >
             {[
+              { icon: Github, label: 'GitHub', href: 'https://github.com/Satwik-1234', bg: 'bg-[#333] hover:bg-[#222]', external: true },
               { icon: MessageCircle, label: 'WhatsApp', href: whatsappUrl, bg: 'bg-[#25D366] hover:bg-[#20BD5A]', external: true },
               { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/satwik-udupi-37304a231', bg: 'bg-[#0077B5] hover:bg-[#006699]', external: true },
               { icon: ExternalLink, label: 'Consulting', href: '/pravaha-tattva', bg: 'bg-primary hover:bg-primary/90', external: false },
@@ -164,6 +165,26 @@ const ContactSection = () => {
                 </motion.a>
               );
             })}
+          </motion.div>
+
+          {/* GitHub Contributions Chart */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.55 }}
+            className="flex flex-col items-center mt-12 w-full max-w-4xl mx-auto overflow-hidden"
+          >
+            <h3 className="text-xl font-medium mb-4 text-foreground">My GitHub Contributions</h3>
+            <div className="w-full overflow-x-auto pb-4">
+              <div className="bg-card/30 p-4 rounded-xl border border-border/40 min-w-[700px]">
+                <img
+                  src="https://ghchart.rshah.org/216e39/Satwik-1234"
+                  alt="Satwik's GitHub Contributions Chart"
+                  className="w-full"
+                />
+              </div>
+            </div>
+            <p className="text-muted-foreground text-sm">Scroll &gt;&gt;</p>
           </motion.div>
 
           {/* Availability */}

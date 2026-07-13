@@ -1,203 +1,161 @@
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Linkedin, ArrowRight, ChevronDown, Download, Droplets, MapPin } from 'lucide-react';
-import profilePhoto from '@/assets/profile-photo.png';
+
+const techStack = [
+  { name: 'ArcGIS Pro', icon: '/assets/tech/arcgis-pro.png' },
+  { name: 'QGIS', icon: '/assets/tech/qgis.png' },
+  { name: 'Google Earth Engine', icon: '/assets/tech/google-earth-engine.png' },
+  { name: 'HEC-RAS', icon: '/assets/tech/hec-ras.png' },
+  { name: 'Python', icon: '/assets/tech/python.png' },
+  { name: 'Agisoft Metashape', icon: '/assets/tech/agisoft-metashape.png' },
+];
 
 const HeroSection = () => {
-  const scrollToAbout = () => {
-    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const trackRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const items = track.children;
+    const totalItems = items.length;
+
+    const tickerRestDuration = 75; 
+    const slideDuration = 200; 
+    const tickerSpeed = tickerRestDuration + slideDuration;
+
+    let tickerIndex = 0;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    function playTicker() {
+      tickerIndex++;
+      
+      // Batch DOM updates cleanly inside a single frame callback
+      requestAnimationFrame(() => {
+        if (track) {
+          track.style.transition = `transform ${slideDuration / 1000}s cubic-bezier(0.25, 1, 0.5, 1)`;
+          track.style.transform = `translateY(-${tickerIndex * (100 / totalItems)}%)`;
+        }
+      });
+
+      let nextDelay = tickerSpeed; 
+      const checkIndex = tickerIndex % (totalItems - 1);
+      
+      // Check for the special gold item
+      if (items[checkIndex] && items[checkIndex].classList.contains('ticker-item-gold')) { 
+        nextDelay = 5000; 
+      }
+
+      // Seamless Reset Check
+      if (tickerIndex === totalItems - 1) {
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            if (track) {
+              track.style.transition = "none"; 
+              tickerIndex = 0;
+              track.style.transform = `translateY(0%)`;
+            }
+          });
+        }, slideDuration); // Fire exactly when the slide finishes
+      }
+
+      timeoutId = setTimeout(playTicker, nextDelay);
+    }
+
+    // Kick off the loop safely
+    timeoutId = setTimeout(playTicker, tickerSpeed);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
-      {/* Animated gradient mesh background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
+    <section className="hero-section">
+      <div className="hero-content">
         <motion.div 
-          className="absolute top-1/4 -left-32 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"
-          animate={{ 
-            x: [0, 50, 0],
-            y: [0, 30, 0],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div 
-          className="absolute bottom-1/4 -right-32 w-96 h-96 bg-accent/10 rounded-full blur-[120px]"
-          animate={{ 
-            x: [0, -50, 0],
-            y: [0, -30, 0],
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </div>
-
-      {/* Floating elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-primary/20 rounded-full"
-            style={{
-              left: `${20 + i * 15}%`,
-              top: `${30 + (i % 3) * 20}%`,
-            }}
-            animate={{
-              y: [0, -30, 0],
-              opacity: [0.2, 0.5, 0.2],
-            }}
-            transition={{
-              duration: 4 + i,
-              repeat: Infinity,
-              delay: i * 0.5,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-6 max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          className="headline-stack"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="flex flex-col items-center text-center"
         >
-          {/* Status badge */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mb-8"
-          >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-sm text-emerald-400 font-medium">Open to Opportunities</span>
-            </div>
-          </motion.div>
+          <h1 className="static-line">
+            HEY, I'M
+            <a
+              href="#contact"
+              className="stroke-text name-button"
+              data-text="SATWIK"
+            >
+              SATWIK
+            </a>
+          </h1>
 
-          {/* Profile Image with elegant ring */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="relative mb-10"
-          >
-            <div className="relative">
-              {/* Outer glow ring */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-accent/20 to-primary/20 rounded-full blur-xl opacity-60" />
-              
-              {/* Profile container */}
-              <div className="relative w-36 h-36 md:w-44 md:h-44 rounded-full overflow-hidden ring-2 ring-border/30 ring-offset-4 ring-offset-background">
-                <img 
-                  src={profilePhoto} 
-                  alt="Satwik Udupi - Agricultural Engineer & GIS Analyst"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Name */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-light tracking-tight mb-6"
-          >
-            <span className="text-foreground">Satwik </span>
-            <span className="font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
-              Udupi
+          <div className="action-line">
+            <span className="action-static">AND I'M&nbsp;</span>
+            <span className="ticker-wrapper">
+              <span className="ticker-track" id="ticker-track" ref={trackRef}>
+                <span className="ticker-item">A GIS EXPERT</span>
+                <span className="ticker-item">AN ENGINEER</span>
+                <span className="ticker-item">A HYDROLOGIST</span>
+                <span className="ticker-item">A BIKER</span>
+                <span className="ticker-item">A PHOTOGRAPHER</span>
+                <span className="ticker-item">GIS ANALYST</span>
+                <span className="ticker-item">A PROBLEM SOLVER</span>
+                <span className="ticker-item">A DESIGNER</span>
+                <span className="ticker-item-gold">STILL LEARNING.</span>
+                <span className="ticker-item">AN ENGINEER</span>
+                <span className="ticker-item">A GIS EXPERT</span>
+              </span>
             </span>
-          </motion.h1>
+          </div>
 
-          {/* Role tags */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+          <motion.div 
+            className="mt-24 w-full max-w-5xl z-10 relative"
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex flex-wrap justify-center items-center gap-3 mb-8"
+            transition={{ delay: 1, duration: 1 }}
           >
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/50 border border-border/50 backdrop-blur-sm">
-              <Droplets className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Hydrologist</span>
+            {/* Elegant divider */}
+            <div className="flex items-center justify-center gap-6 mb-12">
+              <div className="h-[1px] w-16 md:w-32 bg-gradient-to-r from-transparent to-amber-500/50"></div>
+              <p className="text-center text-xs md:text-sm tracking-[0.4em] uppercase text-amber-600 font-bold drop-shadow-sm">
+                Core Technologies
+              </p>
+              <div className="h-[1px] w-16 md:w-32 bg-gradient-to-l from-transparent to-amber-500/50"></div>
             </div>
-            <span className="text-muted-foreground/30 hidden sm:block">•</span>
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/50 border border-border/50 backdrop-blur-sm">
-              <MapPin className="w-4 h-4 text-accent" />
-              <span className="text-sm font-medium text-foreground">GIS Analyst</span>
+
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+              {techStack.map((tech, index) => (
+                <motion.div
+                  key={tech.name}
+                  className="group relative flex items-center gap-3 px-5 py-3 md:px-6 md:py-4 rounded-full bg-white/40 backdrop-blur-md border border-white/60 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.05)] cursor-pointer"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.2 + index * 0.1, type: "spring", stiffness: 100 }}
+                  whileHover={{ y: -5, scale: 1.05 }}
+                >
+                  {/* Subtle animated border gradient */}
+                  <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-300 via-yellow-500 to-amber-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-[1px]" />
+                  <div className="absolute inset-[1px] rounded-full bg-white/95 backdrop-blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
+
+                  {/* Icon Container */}
+                  <div className="relative z-10 flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-white to-gray-50 border border-gray-100 shadow-sm group-hover:border-amber-200 group-hover:shadow-amber-500/20 transition-all duration-300">
+                    <img 
+                      src={tech.icon} 
+                      alt={tech.name} 
+                      className="w-5 h-5 md:w-7 md:h-7 object-contain group-hover:scale-110 group-hover:drop-shadow-md transition-all duration-300" 
+                    />
+                  </div>
+
+                  {/* Text */}
+                  <span className="relative z-10 font-bold text-sm md:text-base text-gray-700 group-hover:text-amber-700 transition-all duration-300">
+                    {tech.name}
+                  </span>
+                </motion.div>
+              ))}
             </div>
-          </motion.div>
-
-          {/* Tagline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="text-lg md:text-xl text-muted-foreground font-light max-w-2xl mx-auto mb-12 leading-relaxed"
-          >
-            Transforming complex hydrological data into strategic insights for 
-            <span className="text-foreground font-medium"> sustainable water resource management</span>.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row items-center gap-4"
-          >
-            <motion.a 
-              href="https://drive.google.com/file/d/1Ns1JzNY85B7dB2IXNR4OtxlAOuPR1PAL/view?usp=drive_link" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-foreground text-background font-medium hover:bg-foreground/90 transition-all shadow-lg hover:shadow-xl"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Download className="w-5 h-5" />
-              Download CV
-            </motion.a>
-
-            <motion.a 
-              href="https://www.linkedin.com/in/satwik-udupi-37304a231" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full border-2 border-border/50 bg-card/30 text-foreground font-medium hover:bg-card/60 hover:border-primary/50 transition-all backdrop-blur-sm"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Linkedin className="w-5 h-5" />
-              Connect
-            </motion.a>
-
-            <Link 
-              to="/pravaha-tattva"
-              className="group inline-flex items-center justify-center gap-2 px-6 py-4 text-muted-foreground hover:text-foreground font-medium transition-all"
-            >
-              Consulting
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
           </motion.div>
         </motion.div>
-
-        {/* Scroll Indicator */}
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          onClick={scrollToAbout}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          aria-label="Scroll to about section"
-        >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="flex flex-col items-center gap-2"
-          >
-            <span className="text-xs text-muted-foreground/50 uppercase tracking-widest">Scroll</span>
-            <ChevronDown className="w-5 h-5 text-muted-foreground/50" />
-          </motion.div>
-        </motion.button>
       </div>
     </section>
   );

@@ -120,7 +120,7 @@ const ExperienceSection = () => {
 
                   {/* Content Card */}
                   <div className={`flex-1 ml-12 md:ml-0 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
-                    <div className="bg-card/30 backdrop-blur-sm border border-border/30 rounded-2xl p-6 hover:border-primary/50 transition-all group">
+                    <div className="glass-card p-6 transition-all duration-300 group hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10">
                       {/* Header */}
                       <div className="flex flex-wrap items-start justify-between gap-2 mb-4">
                         <div>

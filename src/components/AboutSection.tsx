@@ -68,7 +68,7 @@ const AboutSection = () => {
               transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
               className="group relative"
             >
-              <div className="relative p-8 rounded-3xl border border-border/50 bg-card/30 backdrop-blur-sm hover:border-border hover:bg-card/50 transition-all duration-500 h-full overflow-hidden">
+              <div className="relative p-8 glass-card hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10 transition-all duration-500 h-full overflow-hidden">
                 {/* Gradient hover effect */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
                 
@@ -100,7 +100,7 @@ const AboutSection = () => {
         >
           {/* Left - Bio */}
           <div className="lg:col-span-3 space-y-6">
-            <div className="p-8 rounded-3xl border border-border/50 bg-card/30 backdrop-blur-sm">
+            <div className="p-8 glass-card">
               <p className="text-lg text-foreground leading-relaxed mb-6">
                 With a foundation in <span className="font-semibold text-primary">Agricultural Engineering</span> and specialized 
                 training in GIS and hydrological modeling, I bridge the gap between field-level challenges and 
@@ -117,7 +117,7 @@ const AboutSection = () => {
           {/* Right - Location & CTA */}
           <div className="lg:col-span-2 space-y-6">
             {/* Location Card */}
-            <div className="p-6 rounded-3xl border border-border/50 bg-card/30 backdrop-blur-sm">
+            <div className="p-6 glass-card">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center flex-shrink-0">
                   <MapPin className="w-5 h-5 text-accent" />
@@ -131,7 +131,8 @@ const AboutSection = () => {
             </div>
 
             {/* CTA Card */}
-            <div className="p-6 rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5">
+            <div className="p-6 glass-card relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <h4 className="text-foreground font-semibold mb-2">Looking to Collaborate?</h4>
               <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
                 Open to consulting, research collaborations, and sustainable water projects.

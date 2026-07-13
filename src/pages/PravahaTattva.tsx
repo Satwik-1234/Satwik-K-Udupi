@@ -10,6 +10,7 @@ import {
   Sun, Moon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 
 // Service images
 import floodplainImg from '@/assets/services/floodplain-mapping.png';
@@ -20,7 +21,7 @@ import cfdAnalysisImg from '@/assets/services/cfd-analysis.png';
 import dronePhotogrammetryImg from '@/assets/services/drone-photogrammetry.png';
 import droneMappingImg from '@/assets/services/drone-mapping.png';
 import multispectralImg from '@/assets/services/multispectral.png';
-import droneHeroImg from '@/assets/drone-hero.png';
+import pravahaLogo from '@/assets/pravaha-logo.png';
 import profilePhoto from '@/assets/profile-photo.png';
 
 const services = [
@@ -127,7 +128,7 @@ const PravahaTattva = () => {
   const whatsappUrl = `https://wa.me/${phoneNumber.replace('+', '')}?text=Hi%20Satwik,%20I'm%20interested%20in%20your%20geospatial%20consulting%20services`;
   const googleFormUrl = 'https://forms.gle/SCyQeFigrgsPft9D9';
   const googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=Krishna+Canal+Saidapur+Road+Karad+415124+Maharashtra+India';
-  const githubUrl = 'https://github.com/satwikudupi';
+  const githubUrl = 'https://github.com/007-Wik';
 
   return (
     <>
@@ -137,9 +138,17 @@ const PravahaTattva = () => {
         <link rel="canonical" href="https://satwikudupi.com/pravaha-tattva" />
       </Helmet>
 
-      <div className="min-h-screen bg-background text-foreground">
+      {/* Global Background and Overlay */}
+      <div 
+        className="fixed inset-0 z-[-2] bg-cover bg-center bg-no-repeat" 
+        style={{ backgroundImage: "url('/assets/pravaha-hero-bg.jpg')" }} 
+      />
+      {/* Light/Dark Mode friendly frosted glass overlay */}
+      <div className="fixed inset-0 z-[-1] bg-background/85 backdrop-blur-[4px] transition-colors duration-300" />
+
+      <div className="min-h-screen text-foreground">
         {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/30">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border/30">
           <div className="max-w-7xl mx-auto px-6 md:px-8 h-16 md:h-20 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3 group">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
@@ -147,7 +156,7 @@ const PravahaTattva = () => {
               </div>
               <div className="hidden sm:block">
                 <span className="text-lg font-semibold tracking-tight text-foreground">Pravaha Tattva</span>
-                <span className="text-xs text-muted-foreground block -mt-0.5">Geospatial Solutions</span>
+                <span className="text-xs text-muted-foreground block -mt-0.5">Geospatial and Hydrological Solutions</span>
               </div>
             </Link>
             
@@ -182,16 +191,12 @@ const PravahaTattva = () => {
 
         {/* Hero */}
         <section className="relative min-h-screen flex items-center pt-20">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5" />
-          <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[150px]" />
-          <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[150px]" />
-          
           <div className="max-w-7xl mx-auto px-6 md:px-8 w-full relative z-10">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/50 bg-card/50 mb-8">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/50 bg-card/50 mb-8 backdrop-blur-sm">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs text-muted-foreground uppercase tracking-widest">Available for Projects</span>
+                  <span className="text-xs text-muted-foreground uppercase tracking-widest font-medium">Available for Projects</span>
                 </div>
                 
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-light leading-[1.1] mb-6 tracking-tight text-foreground">
@@ -218,7 +223,7 @@ const PravahaTattva = () => {
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </motion.a>
                   <a href="#services"
-                    className="inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-full border border-border/50 text-foreground font-medium hover:bg-card hover:border-border transition-all duration-300">
+                    className="inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-full border border-border/50 text-foreground font-medium hover:bg-card/50 hover:border-border transition-all duration-300 backdrop-blur-sm">
                     Explore Services
                   </a>
                 </div>
@@ -229,27 +234,27 @@ const PravahaTattva = () => {
                 <div className="absolute w-[400px] h-[400px] rounded-full border border-primary/10" />
                 <div className="absolute w-[320px] h-[320px] rounded-full border border-primary/20" />
                 <div className="absolute w-[240px] h-[240px] rounded-full border border-primary/10" />
-                <motion.img src={droneHeroImg} alt="UAV Survey Drone" className="w-[280px] md:w-[320px] drop-shadow-2xl"
-                  animate={{ y: [0, -15, 0], rotate: [0, 3, 0] }} transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }} />
+                <motion.img src={pravahaLogo} alt="Pravaha Tattva Logo" className="w-[380px] md:w-[420px] drop-shadow-2xl"
+                  animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} />
               </motion.div>
             </div>
           </div>
           
           <motion.div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2"
             animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity }}>
-            <div className="w-6 h-10 rounded-full border border-border/40 flex justify-center pt-2">
+            <div className="w-6 h-10 rounded-full border border-border/40 flex justify-center pt-2 backdrop-blur-sm">
               <div className="w-1 h-2 rounded-full bg-muted-foreground/40" />
             </div>
           </motion.div>
         </section>
 
-        {/* About / Background Section */}
-        <section id="about" ref={aboutRef} className="py-24 md:py-32 relative bg-card/30">
+        {/* About Section */}
+        <section id="about" ref={aboutRef} className="py-24 md:py-32 relative">
           <div className="max-w-7xl mx-auto px-6 md:px-8">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               <motion.div initial={{ opacity: 0, x: -30 }} animate={isAboutInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6 }}
                 className="relative">
-                <div className="relative p-8 md:p-10 rounded-3xl border border-border/40 bg-card/60 backdrop-blur-sm">
+                <div className="relative p-8 md:p-10 rounded-3xl border border-border/40 bg-card/60 backdrop-blur-md shadow-xl shadow-foreground/5">
                   <div className="flex items-start gap-6 mb-8">
                     <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden ring-2 ring-primary/30 ring-offset-4 ring-offset-background flex-shrink-0">
                       <img src={profilePhoto} alt="Satwik Udupi - Founder" className="w-full h-full object-cover" />
@@ -271,7 +276,7 @@ const PravahaTattva = () => {
                       { icon: Briefcase, label: 'Experience', value: '2+ Years' },
                       { icon: Award, label: 'Certifications', value: '20+ Professional' },
                     ].map(item => (
-                      <div key={item.label} className="p-4 rounded-xl bg-muted/30 border border-border/30">
+                      <div key={item.label} className="p-4 rounded-xl bg-background/50 border border-border/30">
                         <item.icon className="w-5 h-5 text-primary mb-2" />
                         <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
                         <p className="text-sm text-foreground font-medium">{item.value}</p>
@@ -294,7 +299,7 @@ const PravahaTattva = () => {
                 
                 <div className="mt-8 flex flex-wrap gap-3">
                   {['Watershed Management', 'Flood Risk Analysis', 'Precision Agriculture'].map((tag) => (
-                    <span key={tag} className="px-4 py-2 rounded-full border border-border/40 bg-muted/20 text-sm text-muted-foreground">
+                    <span key={tag} className="px-4 py-2 rounded-full border border-border/40 bg-card/60 backdrop-blur-sm text-sm text-foreground font-medium shadow-sm">
                       {tag}
                     </span>
                   ))}
@@ -307,50 +312,57 @@ const PravahaTattva = () => {
         {/* Services Grid */}
         <section id="services" ref={servicesRef} className="py-24 md:py-32 relative">
           <div className="max-w-7xl mx-auto px-6 md:px-8">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16 md:mb-20">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16 md:mb-20 text-center md:text-left">
               <span className="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">What We Deliver</span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-4">
                 Technical <span className="font-semibold">Services</span>
               </h2>
-              <p className="text-muted-foreground max-w-xl text-base md:text-lg font-light">
+              <p className="text-muted-foreground max-w-xl text-base md:text-lg font-light mx-auto md:mx-0">
                 End-to-end geospatial solutions powered by industry-standard tools and methodologies.
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {services.map((service, index) => (
                 <motion.div key={service.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }} transition={{ delay: index * 0.05 }} className="group relative"
-                  onMouseEnter={() => setActiveService(service.id)} onMouseLeave={() => setActiveService(null)}>
-                  <div className="relative p-6 md:p-8 rounded-2xl border border-border/30 bg-card/40 hover:bg-card/60 hover:border-primary/20 transition-all duration-500 overflow-hidden h-full">
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
-                      style={{ backgroundImage: `url(${service.image})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
-                    
-                    <div className="relative z-10">
-                      <div className="flex items-start justify-between mb-4 md:mb-6">
-                        <div className="flex items-center gap-3 md:gap-4">
-                          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:border-primary/40 transition-colors">
-                            <service.icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
-                          </div>
-                          <div>
-                            <h3 className="text-lg md:text-xl font-medium text-foreground group-hover:text-primary transition-colors">{service.title}</h3>
-                            <p className="text-xs md:text-sm text-muted-foreground">{service.subtitle}</p>
-                          </div>
+                  viewport={{ once: true }} transition={{ delay: index * 0.05 }} className="h-full">
+                  <CardContainer className="inter-var w-full h-full" containerClassName="w-full h-full flex py-0 items-stretch">
+                    <CardBody className="relative flex flex-col p-5 sm:p-6 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-md shadow-lg shadow-foreground/5 hover:border-primary/30 transition-all duration-300 w-full h-full group/card">
+                      <CardItem translateZ="50" className="flex items-center justify-between mb-4 w-full">
+                        <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover/card:bg-primary group-hover/card:text-primary-foreground text-primary transition-all duration-300">
+                          <service.icon className="w-5 h-5" />
                         </div>
-                        <span className="text-2xl md:text-3xl font-light text-muted-foreground/20 group-hover:text-primary/20 transition-colors">{service.id}</span>
-                      </div>
+                        <span className="text-2xl font-light text-muted-foreground/30 group-hover/card:text-primary/20 transition-colors">{service.id}</span>
+                      </CardItem>
                       
-                      <p className="text-muted-foreground text-sm leading-relaxed mb-4 md:mb-6 font-light">{service.description}</p>
+                      <CardItem translateZ="60" className="w-full">
+                        <h3 className="text-lg font-semibold text-foreground mb-1 group-hover/card:text-primary transition-colors">{service.title}</h3>
+                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-4">{service.subtitle}</p>
+                      </CardItem>
+
+                      <CardItem translateZ="80" className="w-full mb-6 mt-2">
+                        <img
+                          src={service.image}
+                          height="1000"
+                          width="1000"
+                          className="aspect-video w-full object-cover rounded-xl group-hover/card:shadow-2xl transition-all duration-500"
+                          alt={service.title}
+                        />
+                      </CardItem>
                       
-                      <div className="flex flex-wrap gap-2">
+                      <CardItem as="p" translateZ="50" className="text-muted-foreground text-sm leading-relaxed mb-6 flex-grow w-full">
+                        {service.description}
+                      </CardItem>
+                      
+                      <CardItem translateZ="80" className="flex flex-wrap gap-2 mt-auto w-full">
                         {service.capabilities.map((cap) => (
-                          <span key={cap} className="px-3 py-1.5 rounded-full text-xs bg-muted/40 text-muted-foreground border border-border/30 group-hover:border-primary/20 group-hover:text-primary/80 transition-all">
+                          <span key={cap} className="px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-background/50 border border-border/40 text-foreground/80 group-hover/card:border-primary/20 transition-all">
                             {cap}
                           </span>
                         ))}
-                      </div>
-                    </div>
-                  </div>
+                      </CardItem>
+                    </CardBody>
+                  </CardContainer>
                 </motion.div>
               ))}
             </div>
@@ -358,7 +370,7 @@ const PravahaTattva = () => {
         </section>
 
         {/* Process Section */}
-        <section id="process" ref={processRef} className="py-24 md:py-32 bg-card/30">
+        <section id="process" ref={processRef} className="py-24 md:py-32">
           <div className="max-w-7xl mx-auto px-6 md:px-8">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={isProcessInView ? { opacity: 1, y: 0 } : {}} className="text-center mb-16">
               <span className="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">How We Work</span>
@@ -372,13 +384,13 @@ const PravahaTattva = () => {
               {processSteps.map((step, index) => (
                 <motion.div key={step.step} initial={{ opacity: 0, y: 20 }} animate={isProcessInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: index * 0.1 }}
-                  className="relative p-6 rounded-2xl border border-border/30 bg-card/50 hover:border-primary/20 transition-all group">
+                  className="relative p-6 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-md shadow-lg shadow-foreground/5 hover:border-primary/20 transition-all group">
                   <span className="text-4xl font-bold text-primary/10 group-hover:text-primary/20 transition-colors">{step.step}</span>
                   <h3 className="text-lg font-semibold text-foreground mt-3 mb-2">{step.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed mb-4">{step.description}</p>
                   <div className="flex flex-wrap gap-1.5">
                     {step.highlights.map((h) => (
-                      <span key={h} className="px-2.5 py-1 rounded-full text-xs bg-primary/10 text-primary border border-primary/20">{h}</span>
+                      <span key={h} className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-background border border-border/40 text-foreground/80">{h}</span>
                     ))}
                   </div>
                   {index < processSteps.length - 1 && (
@@ -404,57 +416,45 @@ const PravahaTattva = () => {
               {testimonials.map((t, i) => (
                 <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                  className="p-6 md:p-8 rounded-2xl border border-border/30 bg-card/40 hover:border-primary/20 transition-all">
+                  className="p-6 md:p-8 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-md shadow-lg shadow-foreground/5">
                   <div className="flex gap-1 mb-4">
                     {Array.from({ length: 5 }).map((_, j) => (
                       <Star key={j} className="w-4 h-4 text-primary fill-primary" />
                     ))}
                   </div>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-6">"{t.text}"</p>
+                  <p className="text-foreground text-sm font-medium leading-relaxed mb-6">"{t.text}"</p>
                   <div>
-                    <p className="text-foreground font-medium text-sm">{t.name}</p>
+                    <p className="text-foreground font-semibold text-sm">{t.name}</p>
                     <p className="text-muted-foreground text-xs mt-0.5">{t.org}</p>
                   </div>
                 </motion.div>
               ))}
             </div>
-
-            <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mt-12 text-center">
-              <a href={githubUrl} target="_blank" rel="noopener noreferrer"
-                className="group inline-flex items-center gap-3 px-6 py-3 rounded-full border border-border/40 bg-card/40 hover:border-primary/30 hover:bg-primary/5 transition-all">
-                <Github className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">View Open Source Work on GitHub</span>
-                <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </a>
-            </motion.div>
           </div>
         </section>
 
         {/* Contact Section */}
         <section id="contact" className="py-24 md:py-32 relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-card/50" />
-          
           <div className="max-w-4xl mx-auto px-6 md:px-8 relative z-10">
-            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center">
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center p-8 md:p-12 rounded-3xl border border-border/40 bg-card/60 backdrop-blur-xl shadow-2xl shadow-foreground/5">
               <span className="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Let's Collaborate</span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-6">
-                Ready to Start Your<br /><span className="font-semibold">Next Project?</span>
+                Ready to Start Your <span className="font-semibold">Next Project?</span>
               </h2>
               <p className="text-muted-foreground text-base md:text-lg font-light max-w-xl mx-auto mb-10 md:mb-12">
                 Whether it's flood risk analysis, watershed modeling, or drone surveys—
                 I'm here to deliver precision solutions tailored to your needs.
               </p>
               
-              <div className="flex flex-wrap justify-center gap-4 mb-12 md:mb-16">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12 md:mb-16">
                 <motion.a href={googleFormUrl} target="_blank" rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-full bg-primary text-primary-foreground font-medium hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-primary text-primary-foreground font-semibold hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
                   whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <ExternalLink className="w-4 h-4" />
                   Request a Quote
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </motion.a>
                 <motion.a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-full bg-[#25D366] text-white font-medium hover:bg-[#20BD5A] transition-all duration-300"
+                  className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#25D366] text-white font-semibold hover:bg-[#20BD5A] transition-all duration-300"
                   whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <MessageCircle className="w-4 h-4" />
                   WhatsApp
@@ -462,22 +462,18 @@ const PravahaTattva = () => {
               </div>
               
               <div className="grid sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                <a href={`tel:${phoneNumber}`} className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-card/50 border border-border/30 hover:border-primary/20 transition-all group">
+                <a href={`tel:${phoneNumber}`} className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-background/50 border border-border/30 hover:border-primary/20 transition-all group">
                   <Phone className="w-5 h-5 text-primary" />
-                  <span className="text-muted-foreground text-sm">+91 9834300849</span>
+                  <span className="text-foreground font-medium text-sm">+91 9834300849</span>
                 </a>
-                <a href="mailto:satwikudupi@gmail.com" className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-card/50 border border-border/30 hover:border-primary/20 transition-all group">
+                <a href="mailto:satwikudupi@gmail.com" className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-background/50 border border-border/30 hover:border-primary/20 transition-all group">
                   <Mail className="w-5 h-5 text-primary" />
-                  <span className="text-muted-foreground text-sm">satwikudupi@gmail.com</span>
+                  <span className="text-foreground font-medium text-sm">satwikudupi@gmail.com</span>
                 </a>
                 <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer"
-                  className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-card/50 border border-border/30 hover:border-primary/20 transition-all group">
+                  className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-background/50 border border-border/30 hover:border-primary/20 transition-all group">
                   <MapPin className="w-5 h-5 text-primary" />
-                  <span className="text-muted-foreground text-sm text-center">Krishna Canal, Saidapur Road</span>
-                  <span className="text-muted-foreground/60 text-xs">Karad – 415124</span>
-                  <span className="text-primary text-xs flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    Open in Maps <ArrowUpRight className="w-3 h-3" />
-                  </span>
+                  <span className="text-foreground font-medium text-sm text-center">Karad, Maharashtra</span>
                 </a>
               </div>
             </motion.div>
@@ -485,15 +481,15 @@ const PravahaTattva = () => {
         </section>
 
         {/* Footer */}
-        <footer className="py-6 md:py-8 border-t border-border/30 bg-card/30">
-          <div className="max-w-7xl mx-auto px-6 md:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} Pravaha Tattva Solutions</p>
+        <footer className="py-8 border-t border-border/30 bg-background/50 backdrop-blur-lg mt-auto">
+          <div className="max-w-7xl mx-auto px-6 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-sm font-medium text-muted-foreground">© {new Date().getFullYear()} Pravaha Tattva Solutions</p>
             <div className="flex items-center gap-6">
-              <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+              <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
                 <Github className="w-4 h-4" /> GitHub
               </a>
-              <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" /> Portfolio
+              <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" /> Back to Portfolio
               </Link>
             </div>
           </div>

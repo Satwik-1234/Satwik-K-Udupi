@@ -225,7 +225,7 @@ const ProjectsSection = () => {
                 className="group"
               >
                 <div 
-                  className={`relative bg-card/30 backdrop-blur-sm border border-border/30 rounded-2xl overflow-hidden transition-all duration-300 hover:border-primary/30 ${
+                  className={`relative glass-card overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30 ${
                     expandedProject === project.title ? 'border-primary/50' : ''
                   }`}
                 >
@@ -405,7 +405,7 @@ const ProjectsSection = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-                  className="group relative bg-card/30 backdrop-blur-sm border border-border/30 rounded-xl p-6 hover:border-primary/30 transition-all duration-300"
+                  className="group relative glass-card rounded-xl p-6 hover:border-primary/30 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10"
                 >
                   <div className={`absolute inset-0 bg-gradient-to-br ${project.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-xl`} />
                   
