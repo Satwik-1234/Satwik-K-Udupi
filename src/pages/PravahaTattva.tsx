@@ -23,6 +23,7 @@ import droneMappingImg from '@/assets/services/drone-mapping.png';
 import multispectralImg from '@/assets/services/multispectral.png';
 import pravahaLogo from '@/assets/pravaha-logo.png';
 import profilePhoto from '@/assets/profile-photo.png';
+import earthGif from '@/assets/revolving-earth.gif';
 
 const services = [
   {
@@ -434,7 +435,21 @@ const PravahaTattva = () => {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="py-24 md:py-32 relative">
+        <section id="contact" className="py-24 md:py-32 relative overflow-hidden">
+          {/* Earth Background */}
+          <div 
+            className="absolute inset-0 z-0 pointer-events-none"
+            style={{ 
+              backgroundImage: `url(${earthGif})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              opacity: 0.15
+            }}
+          />
+          {/* Subtle overlay to ensure text contrast */}
+          <div className="absolute inset-0 bg-background/50 pointer-events-none z-0" />
+
           <div className="max-w-4xl mx-auto px-6 md:px-8 relative z-10">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center p-8 md:p-12 rounded-3xl border border-border/40 bg-card/60 backdrop-blur-xl shadow-2xl shadow-foreground/5">
               <span className="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Let's Collaborate</span>

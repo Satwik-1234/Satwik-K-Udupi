@@ -5,7 +5,7 @@ import {
   ExternalLink, ArrowUpRight, Send, Github
 } from 'lucide-react';
 import GradientText from '@/components/ui/GradientText';
-import earthGif from '@/assets/revolving-earth.gif';
+
 
 const ContactSection = () => {
   const ref = useRef(null);
@@ -18,19 +18,7 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="py-28 relative overflow-hidden" ref={ref}>
-      {/* Earth Background */}
-      <div 
-        className="absolute inset-0 z-0 pointer-events-none"
-        style={{ 
-          backgroundImage: `url(${earthGif})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          opacity: 0.15
-        }}
-      />
-      {/* Subtle overlay to ensure text contrast */}
-      <div className="absolute inset-0 bg-background/50 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/[0.02] to-transparent" />
 
       <div className="max-w-5xl mx-auto px-6 relative z-10">
         <motion.div
