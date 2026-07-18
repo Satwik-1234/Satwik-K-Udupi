@@ -26,11 +26,11 @@ const ContactSection = () => {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          opacity: 0.25
+          opacity: 0.15
         }}
       />
-      {/* Gradient Overlay for Readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background/70 to-background pointer-events-none z-0" />
+      {/* Subtle overlay to ensure text contrast */}
+      <div className="absolute inset-0 bg-background/50 pointer-events-none z-0" />
 
       <div className="max-w-5xl mx-auto px-6 relative z-10">
         <motion.div
