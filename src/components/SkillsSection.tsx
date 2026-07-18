@@ -142,9 +142,14 @@ const SkillsSection = () => {
               >
                 {/* Inner card */}
                 <div className="relative h-full p-5 flex flex-col">
-                  {/* Icon */}
-                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${domain.gradient} bg-opacity-20 flex items-center justify-center mb-4 opacity-80 group-hover:opacity-100 transition-opacity`}>
-                    <Icon className="w-5 h-5 text-white" />
+                  {/* Icon Container with Animated Glassmorphism */}
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full backdrop-blur-lg border border-white/10 bg-gradient-to-tr from-black/60 to-black/40 shadow-lg hover:shadow-2xl hover:shadow-white/20 hover:scale-110 hover:rotate-3 active:scale-95 active:rotate-0 transition-all duration-300 ease-out hover:border-white/30 hover:bg-gradient-to-tr hover:from-white/10 hover:to-black/40 group/icon relative overflow-hidden mb-5">
+                    {/* Shimmer */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/icon:translate-x-full transition-transform duration-700 ease-out"></div>
+                    {/* Icon */}
+                    <div className="relative z-10 flex items-center justify-center">
+                      <Icon className="w-5 h-5 text-white group-hover/icon:text-white/90 transition-colors duration-300" />
+                    </div>
                   </div>
 
                   {/* Name */}
