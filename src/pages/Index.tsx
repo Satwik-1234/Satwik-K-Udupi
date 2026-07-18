@@ -9,7 +9,7 @@ import SkillsSection from '@/components/SkillsSection';
 import TechStackSection from '@/components/TechStackSection';
 import CertificationsSection from '@/components/CertificationsSection';
 import ProjectsSection from '@/components/ProjectsSection';
-import InteractiveMapSection from '@/components/InteractiveMapSection';
+
 import MapGallerySection from '@/components/MapGallerySection';
 import GitHubProjectsSection from '@/components/GitHubProjectsSection';
 import ContactSection from '@/components/ContactSection';
@@ -50,7 +50,7 @@ const Index = () => {
           <CertificationsSection />
           <ProjectsSection />
           <GitHubProjectsSection />
-          <InteractiveMapSection />
+
           <MapGallerySection />
           <ContactSection />
         </main>
