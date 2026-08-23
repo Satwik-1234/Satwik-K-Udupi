@@ -1,318 +1,466 @@
-import { motion, useInView } from 'framer-motion';
-import { useRef, useState, useEffect } from 'react';
-import { Github, ExternalLink, Star, GitFork, ArrowUpRight } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import {
+  Github,
+  ArrowUpRight,
+  Star,
+  GitFork,
+  Terminal,
+  Copy,
+  Check,
+  Code2,
+  Cpu,
+  Layers,
+  Database,
+  ExternalLink,
+  FolderGit2
+} from 'lucide-react';
+import AuroraText from '@/components/ui/AuroraText';
 
-interface GitHubRepo {
+interface RepositoryData {
+  id: string;
   name: string;
-  description: string;
+  repoSlug: string;
+  title: string;
+  category: string;
   language: string;
-  tags: string[];
-  updated: string;
+  languageColor: string;
+  summary: string;
+  algorithm: string;
+  dataInputs: string;
+  deliverables: string;
+  codeSnippet: string;
+  cloneCmd: string;
   url: string;
-  featured?: boolean;
   stars?: number;
   forks?: number;
-  color: string;
 }
 
-const fallbackRepos: GitHubRepo[] = [
+const REPOSITORIES: RepositoryData[] = [
   {
-    name: "RUSLE_Western-Maharashtra",
-    description: "30m resolution soil erosion modelling integrating RUSLE, terrain analysis, NDVI, and ML-based vulnerability assessment across Western Maharashtra.",
-    language: "Python",
-    tags: ["Python", "GEE", "RUSLE", "GIS"],
-    updated: "2024",
-    url: "https://github.com/Satwik-1234/RUSLE_Western-Maharashtra",
-    featured: true,
-    color: "from-blue-500/20 to-cyan-500/20",
+    id: 'rusle-wm',
+    name: 'RUSLE_Western-Maharashtra',
+    repoSlug: 'Satwik-1234/RUSLE_Western-Maharashtra',
+    title: 'RUSLE Catchment Soil Erosion Engine',
+    category: 'Soil Conservation',
+    language: 'Python',
+    languageColor: '#3B82F6',
+    summary: 'Automated 30m spatial erosion modeling integrating rainfall erosivity, soil erodibility, and slope length-steepness factors across Western Maharashtra river basins.',
+    algorithm: 'RUSLE (Renard et al.) + Topo-Hydrological Slope Formulation',
+    dataInputs: 'CHIRPS Daily Rainfall, NBSS&LUP Soil Maps, SRTM 30m DEM, Sentinel-2 NDVI',
+    deliverables: 'Mean Annual Soil Loss (t/ha/yr) GeoTIFFs, Conservation Priority Zonation',
+    codeSnippet: `# Compute LS Factor from DEM slope & catchment area
+slope_rad = np.radians(dem_slope)
+flow_acc_m = flow_accumulation * pixel_size
+ls_factor = np.power(flow_acc_m / 22.13, 0.4) * np.power(np.sin(slope_rad) / 0.0896, 1.3)
+annual_soil_loss = r_factor * k_factor * ls_factor * c_factor * p_factor`,
+    cloneCmd: 'git clone https://github.com/Satwik-1234/RUSLE_Western-Maharashtra.git',
+    url: 'https://github.com/Satwik-1234/RUSLE_Western-Maharashtra',
   },
   {
-    name: "Pravara-River-Basin-Advanced-Morphometric-Hydrological-Analysis",
-    description: "Comprehensive watershed morphometric and soil erosion modelling pipeline with conservation prioritization for the Pravara River Basin.",
-    language: "Python",
-    tags: ["Hydrology", "Morphometry", "Python"],
-    updated: "2024",
-    url: "https://github.com/Satwik-1234/Pravara-River-Basin-Advanced-Morphometric-Hydrological-Analysis",
-    featured: true,
-    color: "from-teal-500/20 to-emerald-500/20",
+    id: 'pravara-morph',
+    name: 'Pravara-River-Basin-Advanced-Morphometric-Hydrological-Analysis',
+    repoSlug: 'Satwik-1234/Pravara-River-Basin-Analysis',
+    title: 'Drainage Morphometry & Basin Prioritization',
+    category: 'Watershed Hydrology',
+    language: 'Python',
+    languageColor: '#3B82F6',
+    summary: 'Comprehensive extraction of linear, areal, and relief drainage parameters with compound priority rank scoring for sub-watershed soil and water conservation.',
+    algorithm: 'Horton & Strahler Stream Ordering + Compound Ranking (CR)',
+    dataInputs: 'ALOS PALSAR 12.5m RTC DEM, Survey of India Toposheets',
+    deliverables: 'Bifurcation Ratios, Drainage Density (Dd), Relief Ratio (Rh), Priority Rankings',
+    codeSnippet: `# Automated morphometric parameter calculations
+Rb = np.mean([N_u / N_u_plus_1 for N_u, N_u_plus_1 in stream_pairs])
+Dd = total_stream_length_km / basin_area_sqkm
+Fs = stream_count_total / basin_area_sqkm
+Rn = basin_relief_m * Dd  # Ruggedness number`,
+    cloneCmd: 'git clone https://github.com/Satwik-1234/Pravara-River-Basin-Advanced-Morphometric-Hydrological-Analysis.git',
+    url: 'https://github.com/Satwik-1234/Pravara-River-Basin-Advanced-Morphometric-Hydrological-Analysis',
   },
   {
-    name: "Crop-water-Balance-Analysis-GEE-",
-    description: "Crop water requirement and seasonal water balance modelling using satellite datasets in Google Earth Engine.",
-    language: "JavaScript",
-    tags: ["GEE", "Remote Sensing", "Water Resources"],
-    updated: "2024",
-    url: "https://github.com/Satwik-1234/Crop-water-Balance-Analysis-GEE-",
-    featured: true,
-    color: "from-amber-500/20 to-orange-500/20",
+    id: 'crop-water-gee',
+    name: 'Crop-water-Balance-Analysis-GEE-',
+    repoSlug: 'Satwik-1234/Crop-water-Balance-Analysis-GEE-',
+    title: 'Cloud-Native Crop Water Balance & ET Engine',
+    category: 'Remote Sensing & Agri-Tech',
+    language: 'JavaScript',
+    languageColor: '#FACC15',
+    summary: 'Google Earth Engine script calculating spatial evapotranspiration (ET), crop water requirements (CWR), and soil water deficit indices at multi-temporal scales.',
+    algorithm: 'FAO-56 Penman-Monteith Formulation & SSEBop Energy Balance',
+    dataInputs: 'MODIS MOD16A2 ET (500m), Landsat-8 Surface Reflectance, CHIRPS Pentad',
+    deliverables: 'Crop Water Stress Indices (CWSI), Command Area Monthly Water Deficit Rasters',
+    codeSnippet: `// GEE Daily Evapotranspiration & Water Deficit
+var s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+  .filterBounds(roi)
+  .filterDate(startDate, endDate)
+  .map(maskS2clouds);
+
+var ndvi = s2.map(function(img) {
+  return img.normalizedDifference(['B8', 'B4']).rename('NDVI');
+});
+var kc = ndvi.map(function(img) {
+  return img.multiply(1.2).subtract(0.1).rename('Kc');
+});`,
+    cloneCmd: 'git clone https://github.com/Satwik-1234/Crop-water-Balance-Analysis-GEE-.git',
+    url: 'https://github.com/Satwik-1234/Crop-water-Balance-Analysis-GEE-',
   },
   {
-    name: "Soil-Erosion-Analysis-GEE",
-    description: "Geospatial soil erosion modelling using RUSLE methodology in Google Earth Engine.",
-    language: "JavaScript",
-    tags: ["JavaScript", "GEE", "Soil Conservation"],
-    updated: "2024",
-    url: "https://github.com/Satwik-1234/Soil-Erosion-Analysis-GEE",
-    color: "from-violet-500/20 to-purple-500/20",
+    id: 'soil-erosion-gee',
+    name: 'Soil-Erosion-Analysis-GEE',
+    repoSlug: 'Satwik-1234/Soil-Erosion-Analysis-GEE',
+    title: 'GEE Cloud Planetary RUSLE Pipeline',
+    category: 'Planetary Computing',
+    language: 'JavaScript',
+    languageColor: '#FACC15',
+    summary: 'Zero-install interactive GEE cloud pipeline estimating erosion dynamics across multiple catchments with dynamic slider visualizations and zonal stats export.',
+    algorithm: 'Continuous Cloud-Computed Spatial RUSLE Matrix',
+    dataInputs: 'Sentinel-2 BOA, SRTM 30m Global DEM, OpenLandMap Soil Sand/Clay Grids',
+    deliverables: 'Real-time Regional Erosion Heatmaps, Sub-basin Tabular Zonal Summaries',
+    codeSnippet: `// Compute dynamic vegetation C-factor from NDVI in Earth Engine
+var ndviMean = ndviCollection.reduce(ee.Reducer.mean());
+var cFactor = ndviMean.expression(
+  'exp(-alpha * (ndvi / (beta - ndvi)))', {
+    'ndvi': ndviMean.select('NDVI_mean'),
+    'alpha': 2.0,
+    'beta': 1.0
+  }
+).rename('C_Factor');`,
+    cloneCmd: 'git clone https://github.com/Satwik-1234/Soil-Erosion-Analysis-GEE.git',
+    url: 'https://github.com/Satwik-1234/Soil-Erosion-Analysis-GEE',
   },
   {
-    name: "TRMM-GPM-Rainfall-Data-Extraction-Guide-Panchganga-Basin",
-    description: "20-year rainfall extraction and basin-wise organization using TRMM/GPM datasets.",
-    language: "Python",
-    tags: ["Python", "Rainfall Analysis", "Hydrology"],
-    updated: "2024",
-    url: "https://github.com/Satwik-1234/TRMM-GPM-Rainfall-Data-Extraction-Guide-Panchganga-Basin",
-    color: "from-rose-500/20 to-pink-500/20",
+    id: 'trmm-gpm-extractor',
+    name: 'TRMM-GPM-Rainfall-Data-Extraction-Guide-Panchganga-Basin',
+    repoSlug: 'Satwik-1234/TRMM-GPM-Rainfall-Pipeline',
+    title: 'TRMM / GPM Satellite Rainfall Batch Extractor',
+    category: 'Data Engineering',
+    language: 'Python',
+    languageColor: '#3B82F6',
+    summary: 'High-throughput NetCDF4 parser and spatial aggregation pipeline converting 20+ years of satellite precipitation into clean time-series CSVs for hydraulic models.',
+    algorithm: 'Spatial Polygon Vector Masking & Weighted Grid Cell Averages',
+    dataInputs: 'NASA TRMM 3B42 (0.25°), GPM IMERG Final Run V06 (0.1°)',
+    deliverables: 'Daily/Monthly Basin Hyetographs, Extreme Rainfall Frequency Statistics',
+    codeSnippet: `# Spatial clip & organize NetCDF4 rainfall cubes
+import xarray as xr, geopandas as gpd, rioxarray
+basin_shape = gpd.read_file('panchganga_basin.shp')
+ds = xr.open_mfdataset('data/gpm_*.nc', combine='by_coords')
+ds = ds.rio.write_crs("EPSG:4326")
+clipped = ds.rio.clip(basin_shape.geometry, basin_shape.crs)
+df_rainfall = clipped['precipitationCal'].mean(dim=['lat', 'lon']).to_dataframe()`,
+    cloneCmd: 'git clone https://github.com/Satwik-1234/TRMM-GPM-Rainfall-Data-Extraction-Guide-Panchganga-Basin.git',
+    url: 'https://github.com/Satwik-1234/TRMM-GPM-Rainfall-Data-Extraction-Guide-Panchganga-Basin',
   },
   {
-    name: "BORI-DAM-breach-plots-",
-    description: "Dam breach hydrograph analysis and flood modelling visualizations.",
-    language: "Python",
-    tags: ["HEC-RAS", "Flood Analysis", "Hydraulic Modeling"],
-    updated: "2024",
-    url: "https://github.com/Satwik-1234/BORI-DAM-breach-plots-",
-    color: "from-indigo-500/20 to-blue-500/20",
+    id: 'bori-dam-breach',
+    name: 'BORI-DAM-breach-plots-',
+    repoSlug: 'Satwik-1234/BORI-DAM-breach-plots-',
+    title: 'Dam Breach Outflow & Wave Propagation Plots',
+    category: 'Hydraulic Modeling',
+    language: 'Python',
+    languageColor: '#3B82F6',
+    summary: 'Engineering visualization suite translating unsteady HEC-RAS 2D breach simulation tables into peak arrival times, hydrographs, and inundation lag curves.',
+    algorithm: 'Froehlich Dam Breach Hydrograph Analytics & Stage-Discharge Plotting',
+    dataInputs: 'HEC-RAS Unsteady Inundation Plan HDF5 / DSS Output Files',
+    deliverables: 'Peak Discharge Hydrographs, Wave Attenuation Profiles, Emergency Action Timers',
+    codeSnippet: `# Plot stage-discharge & wave lag propagation
+fig, ax1 = plt.subplots(figsize=(10, 5))
+ax1.plot(time_hours, breach_discharge, color='#213BA3', lw=2.2, label='Breach Outflow (m³/s)')
+ax1.set_ylabel('Discharge Q (m³/s)', color='#213BA3', fontweight='bold')
+ax2 = ax1.twinx()
+ax2.plot(time_hours, downstream_depth, color='#D6AE29', lw=1.8, ls='--', label='Downstream Depth (m)')
+ax1.grid(True, alpha=0.25)`,
+    cloneCmd: 'git clone https://github.com/Satwik-1234/BORI-DAM-breach-plots-.git',
+    url: 'https://github.com/Satwik-1234/BORI-DAM-breach-plots-',
   },
 ];
 
-const languageColors: Record<string, string> = {
-  Python: "#3B82F6",
-  JavaScript: "#FACC15",
-  TypeScript: "#60A5FA",
-  R: "#10B981",
-  "Jupyter Notebook": "#F97316",
-};
-
 const GitHubProjectsSection = () => {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [repos, setRepos] = useState<GitHubRepo[]>(fallbackRepos);
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const [selectedRepoId, setSelectedRepoId] = useState<string>(REPOSITORIES[0].id);
+  const [copied, setCopied] = useState<boolean>(false);
 
-  useEffect(() => {
-    const fetchRepos = async () => {
-      try {
-        const res = await fetch("https://api.github.com/users/Satwik-1234/repos?sort=updated&per_page=30");
-        if (!res.ok) return;
-        const data = await res.json();
+  const activeRepo = REPOSITORIES.find((r) => r.id === selectedRepoId) || REPOSITORIES[0];
 
-        const featuredNames = [
-          "RUSLE_Western-Maharashtra",
-          "Pravara-River-Basin-Advanced-Morphometric-Hydrological-Analysis",
-          "Crop-water-Balance-Analysis-GEE-",
-        ];
-
-        const knownTags: Record<string, string[]> = {
-          "RUSLE_Western-Maharashtra": ["Python", "GEE", "RUSLE", "GIS"],
-          "Pravara-River-Basin-Advanced-Morphometric-Hydrological-Analysis": ["Hydrology", "Morphometry", "Python"],
-          "Crop-water-Balance-Analysis-GEE-": ["GEE", "Remote Sensing", "Water Resources"],
-          "Soil-Erosion-Analysis-GEE": ["JavaScript", "GEE", "Soil Conservation"],
-          "TRMM-GPM-Rainfall-Data-Extraction-Guide-Panchganga-Basin": ["Python", "Rainfall Analysis", "Hydrology"],
-          "BORI-DAM-breach-plots-": ["HEC-RAS", "Flood Analysis", "Hydraulic Modeling"],
-        };
-
-        const colors = [
-          "from-blue-500/20 to-cyan-500/20",
-          "from-teal-500/20 to-emerald-500/20",
-          "from-amber-500/20 to-orange-500/20",
-          "from-violet-500/20 to-purple-500/20",
-          "from-rose-500/20 to-pink-500/20",
-          "from-indigo-500/20 to-blue-500/20",
-        ];
-
-        interface GitHubApiResponse {
-          name: string;
-          description: string | null;
-          language: string | null;
-          updated_at: string;
-          html_url: string;
-          stargazers_count: number;
-          forks_count: number;
-          fork: boolean;
-        }
-
-        const mapped: GitHubRepo[] = (data as GitHubApiResponse[])
-          .filter((r) => !r.fork)
-          .map((r, idx: number) => ({
-            name: r.name,
-            description: r.description || "No description available.",
-            language: r.language || "Unknown",
-            tags: knownTags[r.name] || [r.language || "Code"].filter(Boolean),
-            updated: new Date(r.updated_at).toLocaleDateString("en-US", { year: "numeric", month: "short" }),
-            url: r.html_url,
-            featured: featuredNames.includes(r.name),
-            stars: r.stargazers_count,
-            forks: r.forks_count,
-            color: colors[idx % colors.length],
-          }));
-
-        mapped.sort((a: GitHubRepo, b: GitHubRepo) => {
-          if (a.featured && !b.featured) return -1;
-          if (!a.featured && b.featured) return 1;
-          return 0;
-        });
-
-        if (mapped.length > 0) setRepos(mapped);
-      } catch {
-        // keep fallback
-      }
-    };
-    fetchRepos();
-  }, []);
-
-  const featured = repos.filter((r) => r.featured);
-  const regular = repos.filter((r) => !r.featured);
+  const handleCopyClone = () => {
+    navigator.clipboard.writeText(activeRepo.cloneCmd);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
-    <section id="github" className="py-24 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
+    <section id="github" className="py-24 relative overflow-hidden bg-background border-t border-border/40" ref={ref}>
+      {/* Background ambient lighting */}
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/3 via-transparent to-transparent pointer-events-none" />
 
-      <div className="container mx-auto px-4 relative z-10" ref={ref}>
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="max-w-3xl mx-auto text-center mb-16"
+          className="text-center mb-14"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/5 border border-primary/10 mb-6">
-            <Github className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Open Source</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-4">
+            <Github className="w-3.5 h-3.5 text-primary" />
+            <span className="text-xs font-mono font-medium text-primary tracking-wide">
+              Engineering Repositories & Code
+            </span>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 tracking-tight">
-            GitHub <span className="gradient-text">Projects</span>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-4">
+            Open Source{' '}
+            <AuroraText
+              speed={1}
+              colors={['#213BA3', '#47A2F5', '#D6AE29', '#213BA3']}
+              className="font-display font-extrabold"
+            >
+              Hydrology & Geospatial Code
+            </AuroraText>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Open-source repositories in hydrology, GIS analysis, and geospatial engineering.
+
+          <p className="text-muted-foreground max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
+            Select a repository to inspect its engineering methodology, data inputs, real outputs, and executable pipeline scripts.
           </p>
         </motion.div>
 
-        {/* Featured Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {featured.map((repo, index) => (
-            <motion.a
-              href={repo.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={repo.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.1 + index * 0.1 }}
-              className="glass-card p-6 md:p-8 flex flex-col h-full relative group overflow-hidden hover:-translate-y-2 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
-            >
-              {/* Animated Gradient Background */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${repo.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-xl`} />
-              
-              <div className="flex-1">
-                <div className="flex justify-between items-start mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-white border border-gray-100 shadow-sm flex items-center justify-center text-foreground group-hover:scale-110 group-hover:shadow-md transition-all duration-300">
-                     <Github className="w-6 h-6" />
-                  </div>
-                  <div className="flex items-center gap-3 text-muted-foreground text-sm">
-                    {repo.stars !== undefined && repo.stars > 0 && (
-                      <div className="flex items-center gap-1 font-medium bg-white/50 px-2 py-1 rounded-full border border-gray-100 shadow-sm">
-                        <Star className="w-3.5 h-3.5 text-amber-500" /> {repo.stars}
-                      </div>
-                    )}
-                    {repo.forks !== undefined && repo.forks > 0 && (
-                      <div className="flex items-center gap-1 font-medium bg-white/50 px-2 py-1 rounded-full border border-gray-100 shadow-sm">
-                        <GitFork className="w-3.5 h-3.5 text-blue-500" /> {repo.forks}
-                      </div>
-                    )}
-                  </div>
-                </div>
+        {/* Dual-Pane Interactive Explorer */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column: Repository Selector List (5 cols) */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="lg:col-span-5 flex flex-col gap-2.5"
+          >
+            <div className="flex items-center justify-between px-2 mb-1">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground">
+                Repositories ({REPOSITORIES.length})
+              </span>
+              <a
+                href="https://github.com/Satwik-1234"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-mono text-primary hover:underline inline-flex items-center gap-1"
+              >
+                @Satwik-1234 <ArrowUpRight className="w-3 h-3" />
+              </a>
+            </div>
 
-                <h3 className="text-xl font-bold font-display text-foreground group-hover:text-primary transition-colors mb-3 line-clamp-2">
-                  {repo.name}
-                </h3>
-                
-                <p className="text-muted-foreground text-sm leading-relaxed mb-6 line-clamp-3">
-                  {repo.description}
-                </p>
-              </div>
-
-              <div className="mt-auto">
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {repo.tags.slice(0, 3).map((tag) => (
-                    <span key={tag} className="px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-md bg-gray-100/80 text-gray-600 border border-gray-200/50 shadow-sm">
-                      {tag}
-                    </span>
-                  ))}
-                  {repo.tags.length > 3 && (
-                    <span className="px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-md bg-gray-100/80 text-gray-600 border border-gray-200/50 shadow-sm">
-                      +{repo.tags.length - 3}
-                    </span>
+            {REPOSITORIES.map((repo) => {
+              const isSelected = repo.id === selectedRepoId;
+              return (
+                <button
+                  key={repo.id}
+                  onClick={() => setSelectedRepoId(repo.id)}
+                  className={`text-left p-4 rounded-xl border transition-all duration-200 relative overflow-hidden group ${
+                    isSelected
+                      ? 'bg-card border-primary/50 shadow-md shadow-primary/5'
+                      : 'bg-card/40 hover:bg-card/70 border-border/50 hover:border-border'
+                  }`}
+                >
+                  {isSelected && (
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l" />
                   )}
-                </div>
-                
-                <div className="flex items-center justify-between pt-5 border-t border-border/50">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                    <span
-                      className="w-3 h-3 rounded-full shadow-sm border border-black/5"
-                      style={{ backgroundColor: languageColors[repo.language] || '#6B7280' }}
-                    />
-                    {repo.language}
+
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <span className="text-[11px] font-mono text-muted-foreground truncate">
+                      {repo.repoSlug}
+                    </span>
+                    <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 flex-shrink-0">
+                      {repo.category}
+                    </span>
                   </div>
-                  <ArrowUpRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" />
+
+                  <h3
+                    className={`text-sm font-bold leading-tight mb-1.5 transition-colors ${
+                      isSelected ? 'text-primary' : 'text-foreground group-hover:text-primary'
+                    }`}
+                  >
+                    {repo.title}
+                  </h3>
+
+                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                    {repo.summary}
+                  </p>
+
+                  <div className="flex items-center gap-2 mt-3 pt-2.5 border-t border-border/30 text-[11px] font-mono text-muted-foreground">
+                    <span
+                      className="w-2 h-2 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: repo.languageColor }}
+                    />
+                    <span>{repo.language}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </motion.div>
+
+          {/* Right Column: Deep-Dive Inspector & Code Terminal (7 cols) */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="lg:col-span-7 sticky top-24"
+          >
+            <div className="rounded-2xl border border-border/70 bg-card/90 backdrop-blur-xl shadow-xl overflow-hidden">
+              {/* Terminal Window Header Bar */}
+              <div className="flex items-center justify-between px-4 py-3 bg-muted/40 border-b border-border/50">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-rose-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
+                  </div>
+                  <span className="text-xs font-mono text-muted-foreground ml-2 font-medium flex items-center gap-1.5">
+                    <FolderGit2 className="w-3.5 h-3.5 text-primary" />
+                    {activeRepo.name}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleCopyClone}
+                    title="Copy Git Clone command"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono bg-background border border-border hover:border-primary/40 text-foreground transition-all"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="w-3 h-3 text-emerald-500" />
+                        <span className="text-emerald-500">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3 text-muted-foreground" />
+                        <span>git clone</span>
+                      </>
+                    )}
+                  </button>
+
+                  <a
+                    href={activeRepo.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-mono font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-sm"
+                  >
+                    <span>View Repo</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
               </div>
-            </motion.a>
-          ))}
+
+              {/* Inspector Content Body */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeRepo.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                  className="p-6 space-y-5"
+                >
+                  {/* Title & Summary */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full"
+                        style={{ backgroundColor: activeRepo.languageColor }}
+                      />
+                      <span className="text-xs font-mono text-muted-foreground">
+                        {activeRepo.language} · {activeRepo.category}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-foreground mb-2">
+                      {activeRepo.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                      {activeRepo.summary}
+                    </p>
+                  </div>
+
+                  {/* Technical Specifications Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    {/* Algorithm */}
+                    <div className="p-3.5 rounded-xl bg-background/80 border border-border/50">
+                      <div className="flex items-center gap-2 mb-1 text-primary">
+                        <Cpu className="w-3.5 h-3.5" />
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
+                          Methodology / Formulation
+                        </span>
+                      </div>
+                      <p className="text-xs font-semibold text-foreground leading-tight">
+                        {activeRepo.algorithm}
+                      </p>
+                    </div>
+
+                    {/* Inputs */}
+                    <div className="p-3.5 rounded-xl bg-background/80 border border-border/50">
+                      <div className="flex items-center gap-2 mb-1 text-primary">
+                        <Layers className="w-3.5 h-3.5" />
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider">
+                          Primary Datasets & Inputs
+                        </span>
+                      </div>
+                      <p className="text-xs font-semibold text-foreground leading-tight">
+                        {activeRepo.dataInputs}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Core Deliverable Bar */}
+                  <div className="p-3.5 rounded-xl bg-primary/5 border border-primary/20">
+                    <div className="flex items-start gap-2">
+                      <Database className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                      <div>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary block mb-0.5">
+                          Engineering Output Deliverable
+                        </span>
+                        <span className="text-xs text-foreground font-semibold">
+                          {activeRepo.deliverables}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Code Snippet Box */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] font-mono text-muted-foreground flex items-center gap-1.5">
+                        <Code2 className="w-3.5 h-3.5 text-primary" />
+                        Core Algorithm Implementation
+                      </span>
+                      <span className="text-[10px] font-mono text-muted-foreground/70">
+                        {activeRepo.language}
+                      </span>
+                    </div>
+
+                    <pre className="p-4 rounded-xl bg-zinc-950 text-zinc-100 font-mono text-xs overflow-x-auto leading-relaxed border border-zinc-800 shadow-inner">
+                      <code>{activeRepo.codeSnippet}</code>
+                    </pre>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </motion.div>
         </div>
 
-        {/* Regular Repos Grid (More Compact) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
-          {regular.map((repo, index) => (
-            <motion.a
-              href={repo.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={repo.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.4, delay: 0.3 + index * 0.05 }}
-              className="glass-card p-5 group flex flex-col hover:-translate-y-1 hover:shadow-lg transition-all duration-300 border border-border/50 hover:border-primary/40 relative overflow-hidden"
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br ${repo.color} opacity-0 group-hover:opacity-50 transition-opacity duration-500 -z-10 blur-xl`} />
-              <div className="flex justify-between items-start mb-3">
-                <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors truncate pr-4 text-base">
-                  {repo.name}
-                </h4>
-                <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 mt-0.5" />
-              </div>
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1 leading-relaxed">
-                {repo.description}
-              </p>
-              <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground mt-auto pt-4 border-t border-border/50">
-                <span
-                  className="w-2.5 h-2.5 rounded-full shadow-sm"
-                  style={{ backgroundColor: languageColors[repo.language] || '#6B7280' }}
-                />
-                {repo.language}
-              </div>
-            </motion.a>
-          ))}
-        </div>
-
-        {/* View All */}
+        {/* Bottom GitHub CTA */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: 0.6 }}
-          className="text-center"
+          initial={{ opacity: 0, y: 16 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="mt-14 text-center"
         >
-          <motion.a
+          <a
             href="https://github.com/Satwik-1234"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-foreground text-background font-semibold text-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-md hover:shadow-xl"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-foreground text-background hover:bg-foreground/90 text-xs font-mono font-semibold transition-all shadow-md hover:shadow-lg"
           >
-            <Github className="w-5 h-5" />
-            Explore All on GitHub
-          </motion.a>
+            <Github className="w-4 h-4" />
+            <span>Explore All 20+ Repositories on GitHub</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </a>
         </motion.div>
       </div>
     </section>

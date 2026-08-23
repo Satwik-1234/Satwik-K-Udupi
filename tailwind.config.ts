@@ -19,19 +19,19 @@ export default {
   				'Plus Jakarta Sans',
   				'sans-serif'
   			],
-  			body: [
-  				'Inter',
-  				'sans-serif'
-  			],
   			sans: [
-  				'ui-sans-serif',
+  				'Plus Jakarta Sans',
+  				'Inter',
   				'system-ui',
   				'sans-serif'
   			],
-  			serif: [
-  				'ui-serif',
-  				'Georgia',
-  				'serif'
+  			outfit: [
+  				'Outfit',
+  				'sans-serif'
+  			],
+  			body: [
+  				'Inter',
+  				'sans-serif'
   			],
   			mono: [
   				'ui-monospace',

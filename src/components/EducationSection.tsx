@@ -1,7 +1,7 @@
-import { motion, useInView } from 'framer-motion';
+﻿import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { GraduationCap, Award, BookOpen } from 'lucide-react';
-import GradientText from '@/components/ui/GradientText';
+import AuroraText from '@/components/ui/AuroraText';
 
 const education = [
   {
@@ -77,13 +77,12 @@ const EducationSection = () => {
           {/* Section Header */}
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4">
-              <GradientText
+              <AuroraText
                 colors={['#213BA3', '#47A2F5', '#D6AE29']}
-                animationSpeed={6}
                 className="text-3xl md:text-4xl font-display font-bold"
               >
                 Education
-              </GradientText>
+              </AuroraText>
             </h2>
             <div className="section-divider" />
           </div>
@@ -185,3 +184,5 @@ const EducationSection = () => {
 };
 
 export default EducationSection;
+
+

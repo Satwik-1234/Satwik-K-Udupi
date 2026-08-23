@@ -1,7 +1,7 @@
-import { motion, useInView } from 'framer-motion';
+﻿import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { Award, Calendar, ArrowRight } from 'lucide-react';
-import GradientText from '@/components/ui/GradientText';
+import AuroraText from '@/components/ui/AuroraText';
 
 interface Certification {
   name: string;
@@ -80,13 +80,12 @@ const CertificationsSection = () => {
             
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 tracking-tight">
               Licenses &{' '}
-              <GradientText
+              <AuroraText
                 colors={['#213BA3', '#47A2F5', '#D6AE29']}
-                animationSpeed={6}
                 className="text-4xl md:text-5xl font-display font-bold inline-flex"
               >
                 Certifications
-              </GradientText>
+              </AuroraText>
             </h2>
             
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -199,3 +198,5 @@ const CertificationsSection = () => {
 };
 
 export default CertificationsSection;
+
+

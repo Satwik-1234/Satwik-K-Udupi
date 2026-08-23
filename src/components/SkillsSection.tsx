@@ -1,10 +1,10 @@
-import { motion, useInView } from 'framer-motion';
+﻿import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import {
   Waves, Satellite, Camera, Ruler, Code, BarChart3,
   Layers, Cloud, Zap
 } from 'lucide-react';
-import GradientText from '@/components/ui/GradientText';
+import AuroraText from '@/components/ui/AuroraText';
 import BorderGlow from '@/components/ui/BorderGlow';
 
 const skillDomains = [
@@ -97,13 +97,12 @@ const SkillsSection = () => {
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-4">
             Specialized{' '}
-            <GradientText
+            <AuroraText
               colors={['#213BA3', '#47A2F5', '#D6AE29']}
-              animationSpeed={6}
               className="font-bold text-3xl md:text-4xl lg:text-5xl inline-flex"
             >
               Domains
-            </GradientText>
+            </AuroraText>
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-lg">
             Core competencies in water resource engineering and geospatial technologies
@@ -182,3 +181,5 @@ const SkillsSection = () => {
 };
 
 export default SkillsSection;
+
+

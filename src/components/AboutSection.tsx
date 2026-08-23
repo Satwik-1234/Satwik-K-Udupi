@@ -1,7 +1,7 @@
-import { motion, useInView } from 'framer-motion';
+﻿import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { MapPin, Droplets, Layers, Mountain, ArrowUpRight, Sparkles } from 'lucide-react';
-import GradientText from '@/components/ui/GradientText';
+import AuroraText from '@/components/ui/AuroraText';
 import BorderGlow from '@/components/ui/BorderGlow';
 
 const focus = [
@@ -50,13 +50,12 @@ const AboutSection = () => {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-foreground mb-6">
             Agricultural Engineer with
             <br />
-            <GradientText
+            <AuroraText
               colors={['#213BA3', '#47A2F5', '#D6AE29']}
-              animationSpeed={6}
               className="font-bold text-4xl md:text-5xl lg:text-6xl"
             >
               Water Resource Expertise
-            </GradientText>
+            </AuroraText>
           </h2>
           <p className="text-muted-foreground text-lg md:text-xl font-light max-w-2xl leading-relaxed">
             Combining field expertise with advanced geospatial tools to deliver data-driven solutions 
@@ -172,3 +171,5 @@ const AboutSection = () => {
 };
 
 export default AboutSection;
+
+

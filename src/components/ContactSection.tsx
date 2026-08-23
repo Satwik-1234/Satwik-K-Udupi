@@ -1,10 +1,10 @@
-import { motion, useInView } from 'framer-motion';
+﻿import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import {
   Mail, MapPin, Linkedin, Phone, MessageCircle,
   ExternalLink, ArrowUpRight, Send, Github
 } from 'lucide-react';
-import GradientText from '@/components/ui/GradientText';
+import AuroraText from '@/components/ui/AuroraText';
 
 
 const ContactSection = () => {
@@ -39,13 +39,12 @@ const ContactSection = () => {
 
             <h2 className="text-4xl md:text-5xl font-light tracking-tight text-foreground mb-4">
               Let's{' '}
-              <GradientText
+              <AuroraText
                 colors={['#213BA3', '#47A2F5', '#D6AE29']}
-                animationSpeed={6}
                 className="font-bold text-4xl md:text-5xl inline-flex"
               >
                 Connect
-              </GradientText>
+              </AuroraText>
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto text-lg">
               Ready to collaborate on GIS, hydrology, or agricultural engineering projects?
@@ -218,3 +217,5 @@ const ContactSection = () => {
 };
 
 export default ContactSection;
+
+

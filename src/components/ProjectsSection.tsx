@@ -1,7 +1,7 @@
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+﻿import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { ChevronRight, MapPin, Calendar, Target, Database, Wrench, BarChart3, CheckCircle2, Layers, ArrowUpRight } from 'lucide-react';
-import GradientText from '@/components/ui/GradientText';
+import AuroraText from '@/components/ui/AuroraText';
 import BorderGlow from '@/components/ui/BorderGlow';
 
 interface Project {
@@ -209,13 +209,12 @@ const ProjectsSection = () => {
             
             <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 tracking-tight">
               Featured{' '}
-              <GradientText
+              <AuroraText
                 colors={['#213BA3', '#47A2F5', '#D6AE29']}
-                animationSpeed={6}
                 className="text-4xl md:text-5xl font-display font-bold inline-flex"
               >
                 Projects
-              </GradientText>
+              </AuroraText>
             </h2>
             
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -452,3 +451,5 @@ const ProjectsSection = () => {
 };
 
 export default ProjectsSection;
+
+

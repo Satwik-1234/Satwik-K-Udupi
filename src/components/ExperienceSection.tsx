@@ -1,7 +1,7 @@
-import { motion, useInView } from 'framer-motion';
+﻿import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { Calendar, MapPin, Building2 } from 'lucide-react';
-import GradientText from '@/components/ui/GradientText';
+import AuroraText from '@/components/ui/AuroraText';
 
 const experiences = [
   {
@@ -95,13 +95,12 @@ const ExperienceSection = () => {
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-display font-bold mb-4 text-foreground">
               Work{' '}
-              <GradientText
+              <AuroraText
                 colors={['#213BA3', '#47A2F5', '#D6AE29']}
-                animationSpeed={6}
                 className="text-3xl md:text-4xl font-display font-bold inline-flex"
               >
                 Experience
-              </GradientText>
+              </AuroraText>
             </h2>
             <div className="section-divider" />
           </div>
@@ -200,3 +199,5 @@ const ExperienceSection = () => {
 };
 
 export default ExperienceSection;
+
+

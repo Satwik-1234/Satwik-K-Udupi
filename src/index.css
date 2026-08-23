@@ -432,10 +432,10 @@
   flex-direction: column;
   overflow: hidden;
   background-image: url('/assets/topographical_map_art_bg.svg');
-  
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .hero-section::before {
@@ -484,7 +484,6 @@
 .stroke-text {
   color: transparent;
   -webkit-text-stroke: 2px hsl(var(--gold));
-  text-stroke: 2px hsl(var(--gold));
   transition: all 0.3s ease;
   position: relative;
   text-decoration: none;
