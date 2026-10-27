@@ -1,517 +1,231 @@
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { useRef, useState, useEffect } from 'react';
-import {
-  ArrowLeft, Waves, Mountain, Map,
-  Plane, Camera, Ruler, Phone, Mail, MessageCircle, ExternalLink,
-  ArrowRight, ArrowUpRight, Droplets, Layers, Satellite, FlaskConical,
-  User, Briefcase, Award, MapPin, GraduationCap, Github, Globe, CheckCircle2, Star,
-  Sun, Moon
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
-
-// Service images
-import floodplainImg from '@/assets/services/floodplain-mapping.png';
-import rainfallRunoffImg from '@/assets/services/rainfall-runoff.png';
-import soilErosionImg from '@/assets/services/soil-erosion.png';
-import gisAnalysisImg from '@/assets/services/gis-analysis.png';
-import cfdAnalysisImg from '@/assets/services/cfd-analysis.png';
-import dronePhotogrammetryImg from '@/assets/services/drone-photogrammetry.png';
-import droneMappingImg from '@/assets/services/drone-mapping.png';
-import multispectralImg from '@/assets/services/multispectral.png';
-import pravahaLogo from '@/assets/pravaha-logo.png';
-import profilePhoto from '@/assets/profile-photo.png';
-import earthGif from '@/assets/revolving-earth.gif';
+import { motion } from 'framer-motion';
+import AtlasShell from '@/atlas/AtlasShell';
+import Engagements from '@/atlas/sections/Engagements';
+import { LightboxProvider, MaskLines, PlateHead, Reveal, pressable, useLightbox } from '@/atlas/ui';
+import { contact, mapById, pravahaNow } from '@/data/portfolio';
+import { HYDROCAST_LINKS } from '@/lib/hydrocast';
+import logo from '@/assets/pravaha-logo.png';
+import floodplainImg from '@/assets/services/floodplain-mapping.webp';
+import rainfallRunoffImg from '@/assets/services/rainfall-runoff.webp';
+import soilErosionImg from '@/assets/services/soil-erosion.webp';
+import gisAnalysisImg from '@/assets/services/gis-analysis.webp';
+import cfdAnalysisImg from '@/assets/services/cfd-analysis.webp';
+import dronePhotogrammetryImg from '@/assets/services/drone-photogrammetry.webp';
+import droneMappingImg from '@/assets/services/drone-mapping.webp';
+import multispectralImg from '@/assets/services/multispectral.webp';
 
 const services = [
-  {
-    id: '01', icon: Waves, title: 'Hydraulic Modeling', subtitle: 'HEC-RAS & Flood Analysis',
-    description: 'Precision flood risk assessment and floodplain delineation using industry-standard hydraulic modeling.',
-    capabilities: ['Flood Extent Mapping', 'Depth-Velocity Analysis', 'Dam Break Simulation', 'Bridge Hydraulics'],
-    image: floodplainImg
-  },
-  {
-    id: '02', icon: Mountain, title: 'Watershed Hydrology', subtitle: 'HEC-HMS & Runoff Modeling',
-    description: 'Comprehensive hydrological analysis from catchment delineation to peak discharge estimation.',
-    capabilities: ['Basin Delineation', 'Rainfall-Runoff Modeling', 'SCS-CN Method', 'Unit Hydrograph'],
-    image: rainfallRunoffImg
-  },
-  {
-    id: '03', icon: Layers, title: 'Erosion Assessment', subtitle: 'RUSLE & Soil Conservation',
-    description: 'Quantitative soil loss estimation using empirical models integrated with remote sensing data.',
-    capabilities: ['RUSLE Modeling', 'Sediment Yield', 'Conservation Planning', 'Priority Mapping'],
-    image: soilErosionImg
-  },
-  {
-    id: '04', icon: Satellite, title: 'Geospatial Analysis', subtitle: 'ArcGIS Pro & QGIS',
-    description: 'Advanced spatial analysis and thematic mapping leveraging multi-temporal satellite imagery.',
-    capabilities: ['LULC Classification', 'Change Detection', 'Spatial Modeling', 'Cartographic Design'],
-    image: gisAnalysisImg
-  },
-  {
-    id: '05', icon: Plane, title: 'UAV Photogrammetry', subtitle: 'Drone Surveys & Mapping',
-    description: 'High-resolution aerial surveys with centimeter-level accuracy for terrain analysis.',
-    capabilities: ['Orthomosaic Generation', 'DSM/DTM Creation', 'Volumetric Analysis', 'Contour Mapping'],
-    image: dronePhotogrammetryImg
-  },
-  {
-    id: '06', icon: FlaskConical, title: 'CFD Simulations', subtitle: 'Computational Fluid Dynamics',
-    description: 'Flow simulation and thermal analysis for agricultural machinery and irrigation infrastructure.',
-    capabilities: ['Flow Simulation', 'Thermal Analysis', 'Design Optimization', 'Performance Validation'],
-    image: cfdAnalysisImg
-  },
-  {
-    id: '07', icon: Camera, title: 'Multispectral Imaging', subtitle: 'NDVI & Crop Health',
-    description: 'Vegetation health assessment using multispectral indices for agricultural optimization.',
-    capabilities: ['NDVI/NDWI Analysis', 'Crop Health Mapping', 'Stress Detection', 'Yield Prediction'],
-    image: multispectralImg
-  },
-  {
-    id: '08', icon: Ruler, title: 'Technical Drafting', subtitle: 'CAD & Design Documentation',
-    description: 'Professional 2D/3D CAD services for irrigation systems and civil infrastructure.',
-    capabilities: ['2D Drafting', '3D Modeling', 'Assembly Drawings', 'Design Documentation'],
-    image: droneMappingImg
-  }
+  { id: '01', title: 'Hydraulic modelling', tool: 'HEC-RAS · flood analysis', text: 'Flood-extent and depth–velocity mapping, dam-break simulation and bridge hydraulics, built on industry-standard 1D/2D models.', caps: ['Flood extent mapping', 'Depth–velocity analysis', 'Dam-break simulation', 'Bridge hydraulics'], img: floodplainImg },
+  { id: '02', title: 'Watershed hydrology', tool: 'HEC-HMS · runoff modelling', text: 'From catchment delineation to peak-discharge estimation — rainfall–runoff models that stand up to review.', caps: ['Basin delineation', 'Rainfall–runoff modelling', 'SCS-CN method', 'Unit hydrograph'], img: rainfallRunoffImg },
+  { id: '03', title: 'Erosion assessment', tool: 'RUSLE · soil conservation', text: 'Quantified soil loss using empirical models combined with remote sensing, ready for conservation planning.', caps: ['RUSLE modelling', 'Sediment yield', 'Conservation planning', 'Priority mapping'], img: soilErosionImg },
+  { id: '04', title: 'Geospatial analysis', tool: 'ArcGIS Pro · QGIS', text: 'Spatial analysis and thematic cartography from multi-temporal satellite imagery.', caps: ['LULC classification', 'Change detection', 'Spatial modelling', 'Cartographic design'], img: gisAnalysisImg },
+  { id: '05', title: 'UAV photogrammetry', tool: 'Drone surveys · mapping', text: 'High-resolution aerial surveys with centimetre-level accuracy for terrain analysis and volumes.', caps: ['Orthomosaics', 'DSM / DTM', 'Volumetric analysis', 'Contour mapping'], img: dronePhotogrammetryImg },
+  { id: '06', title: 'CFD simulation', tool: 'Computational fluid dynamics', text: 'Flow and thermal simulation for agricultural machinery and irrigation infrastructure.', caps: ['Flow simulation', 'Thermal analysis', 'Design optimisation', 'Performance validation'], img: cfdAnalysisImg },
+  { id: '07', title: 'Multispectral imaging', tool: 'NDVI · crop health', text: 'Vegetation-health assessment from multispectral indices, for agriculture and land management.', caps: ['NDVI / NDWI analysis', 'Crop-health mapping', 'Stress detection', 'Yield indicators'], img: multispectralImg },
+  { id: '08', title: 'Flood-frequency analysis', tool: 'Return periods · design floods', text: 'Annual-maxima and peak-over-threshold analysis of gauge records to derive return-period discharges and stages for design and hydraulic models.', caps: ['Return-period estimates', 'Distribution fitting', 'Design flood hydrographs', 'Uncertainty bands'], img: rainfallRunoffImg },
+  { id: '09', title: 'NGO & CSR reporting', tool: 'Impact maps · data analysis', text: 'Programme reports for NGOs and CSR funders: clear maps, analysed field data and defensible numbers.', caps: ['Impact mapping', 'GIS mapping', 'Data analysis', 'Report design'], img: gisAnalysisImg },
+  { id: '10', title: 'Technical drafting', tool: 'CAD · documentation', text: 'Professional 2D/3D CAD for irrigation systems and civil infrastructure.', caps: ['2D drafting', '3D modelling', 'Assembly drawings', 'Design documentation'], img: droneMappingImg },
 ];
 
-const processSteps = [
-  { 
-    step: '01', title: 'Discovery & Consultation', 
-    description: 'We begin with in-depth discussions to understand your project scope, objectives, geographic focus, and data requirements. This includes site feasibility assessment, stakeholder mapping, and defining key deliverables and timelines.',
-    highlights: ['Scope Definition', 'Feasibility Study', 'Timeline Planning']
-  },
-  { 
-    step: '02', title: 'Data Acquisition & Preprocessing', 
-    description: 'We collect and preprocess multi-source datasets including satellite imagery (Landsat, Sentinel), DEM data (SRTM/ALOS), field survey measurements, drone captures, and existing hydrological records for comprehensive spatial coverage.',
-    highlights: ['Satellite Imagery', 'Field Surveys', 'Drone Captures']
-  },
-  { 
-    step: '03', title: 'Analysis & Modeling', 
-    description: 'Our core phase applies industry-standard tools—HEC-RAS for hydraulic modeling, HEC-HMS for rainfall-runoff simulation, ArcGIS Pro/QGIS for spatial analysis, and Python/GEE for automated geospatial workflows and machine learning integration.',
-    highlights: ['HEC-RAS/HMS', 'GIS Analysis', 'ML Integration']
-  },
-  { 
-    step: '04', title: 'Deliverables & Reporting', 
-    description: 'We deliver publication-ready thematic maps, comprehensive technical reports with methodology documentation, interactive web maps, raw processed datasets, and actionable recommendations tailored to your project goals.',
-    highlights: ['Thematic Maps', 'Technical Reports', 'Recommendations']
-  },
+const process = [
+  ['01', 'Discovery', 'Scope, objectives, geography and data needs. Feasibility, deliverables and timeline agreed up front.'],
+  ['02', 'Data', 'Satellite imagery, DEMs, field surveys, drone captures and hydrological records — collected and preprocessed.'],
+  ['03', 'Modelling', 'HEC-RAS, HEC-HMS, ArcGIS Pro/QGIS and Python/GEE workflows, with ML where it earns its place.'],
+  ['04', 'Delivery', 'Publication-ready maps, a documented method report, processed datasets and clear recommendations.'],
 ];
 
-const testimonials = [
-  { name: 'Watershed Management Project', org: 'Forest Department, Maharashtra', text: 'Delivered comprehensive erosion mapping for priority watershed conservation.' },
-  { name: 'Dam Safety Assessment', org: 'Academic Research', text: 'Precision HEC-RAS modeling for Koyna Dam breach scenario analysis.' },
-];
-
-const PravahaTattva = () => {
-  const [activeService, setActiveService] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(() => document.documentElement.classList.contains('dark'));
-  const servicesRef = useRef<HTMLDivElement>(null);
-  const aboutRef = useRef<HTMLDivElement>(null);
-  const processRef = useRef<HTMLDivElement>(null);
-  const isAboutInView = useInView(aboutRef, { once: true, margin: "-100px" });
-  const isProcessInView = useInView(processRef, { once: true, margin: "-100px" });
-
-  const toggleTheme = () => {
-    const html = document.documentElement;
-    if (isDarkMode) {
-      html.classList.remove('dark');
-      html.classList.add('light');
-    } else {
-      html.classList.remove('light');
-      html.classList.add('dark');
-    }
-    setIsDarkMode(!isDarkMode);
-  };
-  
-  const phoneNumber = '+919834300849';
-  const whatsappUrl = `https://wa.me/${phoneNumber.replace('+', '')}?text=Hi%20Satwik,%20I'm%20interested%20in%20your%20geospatial%20consulting%20services`;
-  const googleFormUrl = 'https://forms.gle/SCyQeFigrgsPft9D9';
-  const googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=Krishna+Canal+Saidapur+Road+Karad+415124+Maharashtra+India';
-  const githubUrl = 'https://github.com/007-Wik';
-
+const Services = () => {
+  const [i, setI] = useState(0);
+  const s = services[i];
   return (
-    <>
-      <Helmet>
-        <title>Pravaha Tattva Solutions | Geospatial & Hydrology Consulting</title>
-        <meta name="description" content="Professional GIS, hydraulic modeling, and drone mapping services. Expertise in HEC-RAS, HEC-HMS, ArcGIS, and remote sensing for sustainable water resource management." />
-        <link rel="canonical" href="https://satwikudupi.com/pravaha-tattva" />
-      </Helmet>
-
-      {/* Global Background and Overlay */}
-      <div 
-        className="fixed inset-0 z-[-2] bg-cover bg-center bg-no-repeat" 
-        style={{ backgroundImage: "url('/assets/pravaha-hero-bg.jpg')" }} 
-      />
-      {/* Light/Dark Mode friendly frosted glass overlay */}
-      <div className="fixed inset-0 z-[-1] bg-background/85 backdrop-blur-[4px] transition-colors duration-300" />
-
-      <div className="min-h-screen text-foreground">
-        {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border/30">
-          <div className="max-w-7xl mx-auto px-6 md:px-8 h-16 md:h-20 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <Droplets className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <div className="hidden sm:block">
-                <span className="text-lg font-semibold tracking-tight text-foreground">Pravaha Tattva</span>
-                <span className="text-xs text-muted-foreground block -mt-0.5">Geospatial and Hydrological Solutions</span>
-              </div>
-            </Link>
-            
-            <nav className="hidden md:flex items-center gap-8">
-              <a href="#about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">About</a>
-              <a href="#services" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Services</a>
-              <a href="#process" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Process</a>
-              <a href="#contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact</a>
-            </nav>
-
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={toggleTheme}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </Button>
-              <a href={githubUrl} target="_blank" rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-border/50 flex items-center justify-center hover:border-primary/40 hover:bg-primary/5 transition-all">
-                <Github className="w-4 h-4 text-muted-foreground" />
-              </a>
-              <a href={googleFormUrl} target="_blank" rel="noopener noreferrer"
-                className="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all duration-300">
-                Get Quote
-                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </a>
-            </div>
+    <section id="services" className="a-section" style={{ background: 'rgba(242,237,226,.9)' }}>
+      <div className="a-wrap">
+        <PlateHead n="03" label="Services" right="Legend of capabilities" />
+        <h2 className="a-h2" style={{ marginBottom: 'clamp(36px,5vw,70px)' }}>
+          <MaskLines lines={[<>Ten ways to</>, <>read <span className="a-em">a landscape.</span></>]} />
+        </h2>
+        <div className="svc-grid" style={{ display: 'grid', gap: 'clamp(24px,4vw,70px)' }}>
+          <div>
+            {services.map((x, k) => (
+              <button key={x.id} onClick={() => setI(k)} onMouseEnter={() => setI(k)} data-cursor="View"
+                style={{ display: 'grid', gridTemplateColumns: '48px 1fr auto', alignItems: 'baseline', width: '100%', textAlign: 'left', padding: '16px 0', borderTop: '1px solid var(--rule-strong)', opacity: i === k ? 1 : 0.5, transition: 'opacity .25s, padding .35s', paddingLeft: i === k ? 14 : 0, cursor: 'none' }}>
+                <span className="a-label" style={{ color: i === k ? 'var(--signal)' : undefined }}>{x.id}</span>
+                <span className="a-h3" style={{ fontSize: 'clamp(1.5rem,2.6vw,2.3rem)' }}>{x.title}</span>
+                <span className="a-label hidden sm:block">{x.tool}</span>
+              </button>
+            ))}
+            <div className="a-rule" />
           </div>
-        </header>
-
-        {/* Hero */}
-        <section className="relative min-h-screen flex items-center pt-20">
-          <div className="max-w-7xl mx-auto px-6 md:px-8 w-full relative z-10">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-border/50 bg-card/50 mb-8 backdrop-blur-sm">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-xs text-muted-foreground uppercase tracking-widest font-medium">Available for Projects</span>
-                </div>
-                
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-light leading-[1.1] mb-6 tracking-tight text-foreground">
-                  Precision
-                  <br />
-                  <span className="font-semibold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-                    Geospatial
-                  </span>
-                  <br />
-                  Intelligence
-                </h1>
-                
-                <p className="text-base md:text-lg text-muted-foreground max-w-md mb-10 leading-relaxed font-light">
-                  Transforming complex hydrological data into strategic insights. 
-                  From watershed analysis to flood risk mapping—engineering solutions 
-                  for sustainable water resource management.
-                </p>
-                
-                <div className="flex flex-wrap gap-4">
-                  <motion.a href={googleFormUrl} target="_blank" rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-full bg-primary text-primary-foreground font-medium hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
-                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                    Start a Project
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </motion.a>
-                  <a href="#services"
-                    className="inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-full border border-border/50 text-foreground font-medium hover:bg-card/50 hover:border-border transition-all duration-300 backdrop-blur-sm">
-                    Explore Services
-                  </a>
-                </div>
-              </motion.div>
-              
-              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.2 }}
-                className="relative hidden lg:flex items-center justify-center">
-                <div className="absolute w-[400px] h-[400px] rounded-full border border-primary/10" />
-                <div className="absolute w-[320px] h-[320px] rounded-full border border-primary/20" />
-                <div className="absolute w-[240px] h-[240px] rounded-full border border-primary/10" />
-                <motion.img src={pravahaLogo} alt="Pravaha Tattva Logo" className="w-[380px] md:w-[420px] drop-shadow-2xl"
-                  animate={{ y: [0, -10, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} />
-              </motion.div>
+          <div style={{ position: 'sticky', top: 90, alignSelf: 'start' }}>
+            <div className="a-plate" key={s.id}>
+              <motion.img initial={{ opacity: 0, scale: 1.03 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} src={s.img} alt={s.title} style={{ aspectRatio: '16/10', objectFit: 'cover', width: '100%' }} />
             </div>
+            <div className="a-caption"><span>{s.id} — {s.title}</span><span>{s.tool}</span></div>
+            <p style={{ marginTop: 18, fontSize: 18 }}>{s.text}</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 16 }}>{s.caps.map((c) => <span key={c} className="a-tag">{c}</span>)}</div>
           </div>
-          
-          <motion.div className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2"
-            animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity }}>
-            <div className="w-6 h-10 rounded-full border border-border/40 flex justify-center pt-2 backdrop-blur-sm">
-              <div className="w-1 h-2 rounded-full bg-muted-foreground/40" />
-            </div>
-          </motion.div>
-        </section>
-
-        {/* About Section */}
-        <section id="about" ref={aboutRef} className="py-24 md:py-32 relative">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-              <motion.div initial={{ opacity: 0, x: -30 }} animate={isAboutInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6 }}
-                className="relative">
-                <div className="relative p-8 md:p-10 rounded-3xl border border-border/40 bg-card/60 backdrop-blur-md shadow-xl shadow-foreground/5">
-                  <div className="flex items-start gap-6 mb-8">
-                    <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden ring-2 ring-primary/30 ring-offset-4 ring-offset-background flex-shrink-0">
-                      <img src={profilePhoto} alt="Satwik Udupi - Founder" className="w-full h-full object-cover" />
-                    </div>
-                    <div>
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-3">
-                        <User className="w-3 h-3 text-primary" />
-                        <span className="text-xs text-primary font-medium">Founder</span>
-                      </div>
-                      <h3 className="text-2xl font-semibold text-foreground">Satwik Udupi</h3>
-                      <p className="text-muted-foreground text-sm mt-1">Agricultural Engineer & GIS Specialist</p>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
-                    {[
-                      { icon: GraduationCap, label: 'Education', value: 'B.Tech Agricultural Engg.' },
-                      { icon: MapPin, label: 'Location', value: 'Karad, Maharashtra' },
-                      { icon: Briefcase, label: 'Experience', value: '2+ Years' },
-                      { icon: Award, label: 'Certifications', value: '20+ Professional' },
-                    ].map(item => (
-                      <div key={item.label} className="p-4 rounded-xl bg-background/50 border border-border/30">
-                        <item.icon className="w-5 h-5 text-primary mb-2" />
-                        <p className="text-xs text-muted-foreground mb-1">{item.label}</p>
-                        <p className="text-sm text-foreground font-medium">{item.value}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-              
-              <motion.div initial={{ opacity: 0, x: 30 }} animate={isAboutInView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.6, delay: 0.2 }}>
-                <span className="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Our Background</span>
-                <h2 className="text-3xl md:text-4xl font-light tracking-tight text-foreground mb-6">
-                  Engineering <span className="font-semibold">Sustainable Solutions</span>
-                </h2>
-                <div className="space-y-4 text-muted-foreground leading-relaxed">
-                  <p>Pravaha Tattva Solutions bridges the gap between field-level agricultural challenges and cutting-edge geospatial technology. Founded by Satwik Udupi, we specialize in delivering data-driven insights for water resource management.</p>
-                  <p>With expertise spanning hydrological modeling, GIS analysis, drone surveys, and CFD simulations, we've collaborated with institutions like Shivaji University and the Forest Department of Maharashtra on critical watershed conservation projects.</p>
-                  <p>Our mission: Transform complex environmental data into actionable intelligence for sustainable land and water management across India.</p>
-                </div>
-                
-                <div className="mt-8 flex flex-wrap gap-3">
-                  {['Watershed Management', 'Flood Risk Analysis', 'Precision Agriculture'].map((tag) => (
-                    <span key={tag} className="px-4 py-2 rounded-full border border-border/40 bg-card/60 backdrop-blur-sm text-sm text-foreground font-medium shadow-sm">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* Services Grid */}
-        <section id="services" ref={servicesRef} className="py-24 md:py-32 relative">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16 md:mb-20 text-center md:text-left">
-              <span className="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">What We Deliver</span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-4">
-                Technical <span className="font-semibold">Services</span>
-              </h2>
-              <p className="text-muted-foreground max-w-xl text-base md:text-lg font-light mx-auto md:mx-0">
-                End-to-end geospatial solutions powered by industry-standard tools and methodologies.
-              </p>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {services.map((service, index) => (
-                <motion.div key={service.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }} transition={{ delay: index * 0.05 }} className="h-full">
-                  <CardContainer className="inter-var w-full h-full" containerClassName="w-full h-full flex py-0 items-stretch">
-                    <CardBody className="relative flex flex-col p-5 sm:p-6 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-md shadow-lg shadow-foreground/5 hover:border-primary/30 transition-all duration-300 w-full h-full group/card">
-                      <CardItem translateZ="50" className="flex items-center justify-between mb-4 w-full">
-                        <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center group-hover/card:bg-primary group-hover/card:text-primary-foreground text-primary transition-all duration-300">
-                          <service.icon className="w-5 h-5" />
-                        </div>
-                        <span className="text-2xl font-light text-muted-foreground/30 group-hover/card:text-primary/20 transition-colors">{service.id}</span>
-                      </CardItem>
-                      
-                      <CardItem translateZ="60" className="w-full">
-                        <h3 className="text-lg font-semibold text-foreground mb-1 group-hover/card:text-primary transition-colors">{service.title}</h3>
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-4">{service.subtitle}</p>
-                      </CardItem>
-
-                      <CardItem translateZ="80" className="w-full mb-6 mt-2">
-                        <img
-                          src={service.image}
-                          height="1000"
-                          width="1000"
-                          className="aspect-video w-full object-cover rounded-xl group-hover/card:shadow-2xl transition-all duration-500"
-                          alt={service.title}
-                        />
-                      </CardItem>
-                      
-                      <CardItem as="p" translateZ="50" className="text-muted-foreground text-sm leading-relaxed mb-6 flex-grow w-full">
-                        {service.description}
-                      </CardItem>
-                      
-                      <CardItem translateZ="80" className="flex flex-wrap gap-2 mt-auto w-full">
-                        {service.capabilities.map((cap) => (
-                          <span key={cap} className="px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-background/50 border border-border/40 text-foreground/80 group-hover/card:border-primary/20 transition-all">
-                            {cap}
-                          </span>
-                        ))}
-                      </CardItem>
-                    </CardBody>
-                  </CardContainer>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Process Section */}
-        <section id="process" ref={processRef} className="py-24 md:py-32">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={isProcessInView ? { opacity: 1, y: 0 } : {}} className="text-center mb-16">
-              <span className="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">How We Work</span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-4">
-                Our <span className="font-semibold">Process</span>
-              </h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">A structured approach to delivering precision geospatial intelligence.</p>
-            </motion.div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {processSteps.map((step, index) => (
-                <motion.div key={step.step} initial={{ opacity: 0, y: 20 }} animate={isProcessInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: index * 0.1 }}
-                  className="relative p-6 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-md shadow-lg shadow-foreground/5 hover:border-primary/20 transition-all group">
-                  <span className="text-4xl font-bold text-primary/10 group-hover:text-primary/20 transition-colors">{step.step}</span>
-                  <h3 className="text-lg font-semibold text-foreground mt-3 mb-2">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">{step.description}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {step.highlights.map((h) => (
-                      <span key={h} className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-background border border-border/40 text-foreground/80">{h}</span>
-                    ))}
-                  </div>
-                  {index < processSteps.length - 1 && (
-                    <ArrowRight className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-border" />
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials */}
-        <section className="py-24 md:py-32">
-          <div className="max-w-5xl mx-auto px-6 md:px-8">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-16">
-              <span className="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Track Record</span>
-              <h2 className="text-3xl md:text-4xl font-light tracking-tight text-foreground">
-                Notable <span className="font-semibold">Engagements</span>
-              </h2>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {testimonials.map((t, i) => (
-                <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                  className="p-6 md:p-8 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-md shadow-lg shadow-foreground/5">
-                  <div className="flex gap-1 mb-4">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <Star key={j} className="w-4 h-4 text-primary fill-primary" />
-                    ))}
-                  </div>
-                  <p className="text-foreground text-sm font-medium leading-relaxed mb-6">"{t.text}"</p>
-                  <div>
-                    <p className="text-foreground font-semibold text-sm">{t.name}</p>
-                    <p className="text-muted-foreground text-xs mt-0.5">{t.org}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Section */}
-        <section id="contact" className="py-24 md:py-32 relative overflow-hidden">
-          {/* Earth Background */}
-          <div 
-            className="absolute inset-0 z-0 pointer-events-none"
-            style={{ 
-              backgroundImage: `url(${earthGif})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-              opacity: 0.15
-            }}
-          />
-          {/* Subtle overlay to ensure text contrast */}
-          <div className="absolute inset-0 bg-background/50 pointer-events-none z-0" />
-
-          <div className="max-w-4xl mx-auto px-6 md:px-8 relative z-10">
-            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center p-8 md:p-12 rounded-3xl border border-border/40 bg-card/60 backdrop-blur-xl shadow-2xl shadow-foreground/5">
-              <span className="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Let's Collaborate</span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-6">
-                Ready to Start Your <span className="font-semibold">Next Project?</span>
-              </h2>
-              <p className="text-muted-foreground text-base md:text-lg font-light max-w-xl mx-auto mb-10 md:mb-12">
-                Whether it's flood risk analysis, watershed modeling, or drone surveys—
-                I'm here to deliver precision solutions tailored to your needs.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12 md:mb-16">
-                <motion.a href={googleFormUrl} target="_blank" rel="noopener noreferrer"
-                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-primary text-primary-foreground font-semibold hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
-                  whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  Request a Quote
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </motion.a>
-                <motion.a href={whatsappUrl} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-[#25D366] text-white font-semibold hover:bg-[#20BD5A] transition-all duration-300"
-                  whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <MessageCircle className="w-4 h-4" />
-                  WhatsApp
-                </motion.a>
-              </div>
-              
-              <div className="grid sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                <a href={`tel:${phoneNumber}`} className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-background/50 border border-border/30 hover:border-primary/20 transition-all group">
-                  <Phone className="w-5 h-5 text-primary" />
-                  <span className="text-foreground font-medium text-sm">+91 9834300849</span>
-                </a>
-                <a href="mailto:satwikudupi@gmail.com" className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-background/50 border border-border/30 hover:border-primary/20 transition-all group">
-                  <Mail className="w-5 h-5 text-primary" />
-                  <span className="text-foreground font-medium text-sm">satwikudupi@gmail.com</span>
-                </a>
-                <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer"
-                  className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-background/50 border border-border/30 hover:border-primary/20 transition-all group">
-                  <MapPin className="w-5 h-5 text-primary" />
-                  <span className="text-foreground font-medium text-sm text-center">Karad, Maharashtra</span>
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="py-8 border-t border-border/30 bg-background/50 backdrop-blur-lg mt-auto">
-          <div className="max-w-7xl mx-auto px-6 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm font-medium text-muted-foreground">© {new Date().getFullYear()} Pravaha Tattva Solutions</p>
-            <div className="flex items-center gap-6">
-              <a href={githubUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                <Github className="w-4 h-4" /> GitHub
-              </a>
-              <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" /> Back to Portfolio
-              </Link>
-            </div>
-          </div>
-        </footer>
+        </div>
       </div>
-    </>
+      <style>{`.svc-grid{grid-template-columns:1fr}@media(min-width:960px){.svc-grid{grid-template-columns:minmax(0,6fr) minmax(0,5fr)}}`}</style>
+    </section>
   );
 };
+
+const Work = () => {
+  const { open } = useLightbox();
+  const ids = ['overtop', 'risk', 'soil'];
+  const labels = ['Dam-break inundation', 'Flood-risk zonation', 'Erosion & soil loss'];
+  return (
+    <section id="projects" className="a-section" style={{ background: 'rgba(232,225,208,.92)' }}>
+      <div className="a-wrap">
+        <PlateHead n="04" label="Recent deliverables" right="Sample sheets" />
+        <h2 className="a-h2" style={{ marginBottom: 'clamp(36px,5vw,70px)' }}>
+          <MaskLines lines={[<>Sheets we’ve</>, <><span className="a-em">put our name on.</span></>]} />
+        </h2>
+        <div className="pw-grid" style={{ display: 'grid', gap: 'clamp(18px,2.4vw,34px)' }}>
+          {ids.map((id, k) => (
+            <Reveal key={id} delay={k * 0.08}>
+              <div className="a-plate" data-cursor="Open" aria-label={`Open map: ${mapById(id).title}`} {...pressable(() => open(id))} style={{ cursor: 'none' }}><img src={mapById(id).src} alt={mapById(id).title} loading="lazy" /></div>
+              <div className="a-caption"><span>{labels[k]}</span><span>{mapById(id).tool}</span></div>
+            </Reveal>
+          ))}
+        </div>
+        <Reveal><p className="a-lede" style={{ marginTop: 48, color: 'var(--ink)' }}>Government and institutional engagements are delivered under confidentiality; references and method statements are available on request.</p></Reveal>
+      </div>
+      <style>{`.pw-grid{grid-template-columns:1fr}@media(min-width:800px){.pw-grid{grid-template-columns:repeat(3,1fr)}}`}</style>
+    </section>
+  );
+};
+
+const PravahaTattva = () => (
+  <>
+    <Helmet>
+      <title>Pravaha Tattva Solutions — Geospatial & Hydrology Consulting</title>
+      <meta name="description" content="Pravaha Tattva Solutions: flood and dam-break modelling (HEC-RAS), watershed hydrology (HEC-HMS), GIS, remote sensing, UAV mapping and CFD consulting from Karad, Maharashtra." />
+    </Helmet>
+    <AtlasShell variant="company"
+      nav={[{ label: 'Engagements', href: '#engagements' }, { label: 'Services', href: '#services' }, { label: 'Sheets', href: '#projects' }, { label: 'Process', href: '#process' }, { label: 'Contact', href: '#contact' }]}
+      cta={{ label: 'Portfolio', to: '/' }}
+      brand={<><img src={logo} alt="" style={{ height: 26, width: 'auto' }} /><span>Pravaha Tattva</span></>}>
+      <LightboxProvider>
+        {/* Hero */}
+        <section style={{ minHeight: '100svh', display: 'grid', alignItems: 'center', padding: '110px 0 60px', position: 'relative' }}>
+          <div aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse 62% 64% at 26% 54%, rgba(242,237,226,.9), rgba(242,237,226,.5) 58%, rgba(242,237,226,0))' }} />
+          <div className="a-wrap" style={{ position: 'relative' }}>
+            <div className="a-label" style={{ marginBottom: 28, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+              <span>Geospatial & hydrological solutions</span><span style={{ color: 'var(--signal)' }}>●</span><span>Karad, Maharashtra</span>
+            </div>
+            <h1 className="a-display" style={{ fontSize: 'clamp(3rem,10.5vw,10.5rem)' }}>
+              <MaskLines immediate delay={0.1} lines={[<>Pravaha</>, <><span className="a-em">Tattva</span> Solutions</>]} />
+            </h1>
+            <motion.p className="a-lede" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 1 }}
+              style={{ color: 'var(--ink)', marginTop: 'clamp(24px,4vw,48px)', fontSize: 'clamp(1.15rem,1.9vw,1.6rem)', maxWidth: '40ch' }}>
+              Flood and dam-break modelling, watershed hydrology, GIS and UAV mapping — turning complex water and terrain data into decisions you can defend.
+            </motion.p>
+            <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.1, duration: 1 }} style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 28 }}>
+              <a className="a-btn solid" href={contact.form} target="_blank" rel="noopener noreferrer" data-cursor="Quote"><span>Start a project ↗</span></a>
+              <a className="a-btn" href="#services" style={{ background: 'var(--paper)' }}><span>Explore services ↓</span></a>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Statement */}
+        <section className="a-section" style={{ background: 'rgba(242,237,226,.9)' }}>
+          <div className="a-wrap" style={{ display: 'grid', gap: 40 }}>
+            <PlateHead n="00" label="The studio" right="Founded by Satwik K. Udupi" />
+            <div className="st-grid" style={{ display: 'grid', gap: 40 }}>
+              <h2 className="a-h2"><MaskLines lines={[<>Engineering for</>, <>water, land and</>, <span className="a-em" key="a">the people between.</span>]} /></h2>
+              <Reveal delay={0.1}>
+                <p className="a-lede" style={{ color: 'var(--ink)' }}>Pravaha Tattva bridges field-level agricultural and watershed challenges with modern geospatial technology. We’ve collaborated with institutions such as Shivaji University and the Forest Department of Maharashtra on watershed conservation and flood studies.</p>
+                <p className="a-lede" style={{ marginTop: 18 }}>Our mission: transform environmental data into actionable intelligence for sustainable land and water management across India.</p>
+                <Link to="/" className="a-link" style={{ display: 'inline-block', marginTop: 26, fontWeight: 600 }} data-cursor="Portfolio">Meet the founder — personal portfolio →</Link>
+              </Reveal>
+            </div>
+          </div>
+          <style>{`.st-grid{grid-template-columns:1fr}@media(min-width:960px){.st-grid{grid-template-columns:minmax(0,6fr) minmax(0,5fr);gap:90px;align-items:end}}`}</style>
+        </section>
+
+        {/* Current work */}
+        <section className="a-section" style={{ background: 'rgba(232,225,208,.92)' }}>
+          <div className="a-wrap">
+            <PlateHead n="00b" label="On the desk now" right="Current engagements" />
+            <div className="now-grid" style={{ display: 'grid', gap: 0 }}>
+              {pravahaNow.map((x, k) => (
+                <Reveal key={x.k} delay={k * 0.06}>
+                  <div style={{ borderTop: '1px solid var(--rule-strong)', padding: '20px 22px 26px 0', height: '100%' }}>
+                    <div className="a-label" style={{ color: 'var(--signal)' }}>{String(k + 1).padStart(2, '0')}</div>
+                    <h3 className="a-h3" style={{ fontSize: 'clamp(1.35rem,2vw,1.8rem)', margin: '8px 0 10px' }}>{x.k}</h3>
+                    <p style={{ color: 'var(--ink-soft)', fontSize: 15 }}>{x.v}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+          <style>{`.now-grid{grid-template-columns:1fr}@media(min-width:700px){.now-grid{grid-template-columns:1fr 1fr}}@media(min-width:1100px){.now-grid{grid-template-columns:repeat(5,1fr)}}`}</style>
+        </section>
+
+        <Engagements />
+        <Services />
+        <Work />
+
+        {/* Hydrocast */}
+        <section className="a-section" style={{ background: '#0d1a45', color: '#f2ede2' }}>
+          <div className="a-wrap" style={{ display: 'grid', gap: 28 }}>
+            <div className="a-label" style={{ color: '#c99a1c' }}>Research system · Shivaji University · DST-SERB</div>
+            <h2 className="a-h2" style={{ color: '#f2ede2' }}><MaskLines lines={[<>HydroCast —</>, <span key="x" style={{ fontStyle: 'italic', color: '#c99a1c' }}>flood prediction,</span>, <>basin by basin.</>]} /></h2>
+            <p style={{ fontSize: 'clamp(1.1rem,1.6vw,1.35rem)', maxWidth: '52ch', color: 'rgba(242,237,226,.78)' }}>The operational flood-forecasting system for the Panchganga basin: weather-model rainfall, live IoT river sensing and HEC-HMS hydrology become 90-hour stage forecasts and alert levels, refreshed every six hours.</p>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <Link to="/#hydrocast" className="a-btn" style={{ color: '#f2ede2', borderColor: '#f2ede2' }} data-cursor="Open"><span>See the live forecast →</span></Link>
+              <a className="a-btn" href={HYDROCAST_LINKS.dashboard} target="_blank" rel="noopener noreferrer" style={{ color: '#f2ede2', borderColor: '#f2ede2' }} data-cursor="Live"><span>Live dashboard ↗</span></a>
+            </div>
+          </div>
+        </section>
+
+        {/* Process */}
+        <section id="process" className="a-section" style={{ background: 'rgba(242,237,226,.9)' }}>
+          <div className="a-wrap">
+            <PlateHead n="05" label="How we work" right="Four stages" />
+            <div className="pr-grid" style={{ display: 'grid', gap: 0 }}>
+              {process.map(([n, t, d], k) => (
+                <Reveal key={n} delay={k * 0.08}>
+                  <div style={{ borderTop: '1px solid var(--rule-strong)', padding: '22px 24px 30px 0', height: '100%' }}>
+                    <div className="a-serif" style={{ fontSize: 'clamp(3rem,5vw,4.6rem)', lineHeight: 1, color: 'var(--signal)', fontStyle: 'italic' }}>{n}</div>
+                    <h3 className="a-h3" style={{ margin: '14px 0 10px' }}>{t}</h3>
+                    <p style={{ color: 'var(--ink-soft)' }}>{d}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+          <style>{`.pr-grid{grid-template-columns:1fr}@media(min-width:700px){.pr-grid{grid-template-columns:1fr 1fr}}@media(min-width:1100px){.pr-grid{grid-template-columns:repeat(4,1fr)}}`}</style>
+        </section>
+
+        {/* Contact */}
+        <section id="contact" className="a-section" style={{ background: 'rgba(232,225,208,.92)' }}>
+          <div className="a-wrap">
+            <div className="a-label" style={{ marginBottom: 24 }}>06 — Commission a study</div>
+            <h2 className="a-display" style={{ fontSize: 'clamp(3rem,9.5vw,9.5rem)' }}><MaskLines lines={[<>Tell us the</>, <>river. <span className="a-em">We’ll map it.</span></>]} /></h2>
+            <Reveal>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', margin: '48px 0 40px' }}>
+                <a className="a-btn solid" href={contact.form} target="_blank" rel="noopener noreferrer" data-cursor="Brief"><span>Project brief form ↗</span></a>
+                <a className="a-btn" href={contact.whatsapp} target="_blank" rel="noopener noreferrer" style={{ background: 'var(--paper)' }}><span>WhatsApp</span></a>
+                <a className="a-btn" href={`mailto:${contact.email}`} style={{ background: 'var(--paper)' }}><span>{contact.email}</span></a>
+              </div>
+              <div className="a-label">Krishna Canal, Saidapur Road, Karad 415124, Maharashtra · +91 98343 00849</div>
+              <div className="a-label" style={{ marginTop: 10 }}><a className="a-link" href={contact.github2} target="_blank" rel="noopener noreferrer">GitHub · 007-Wik ↗</a> &nbsp;·&nbsp; <a className="a-link" href={contact.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></div>
+            </Reveal>
+          </div>
+          <footer className="a-wrap" style={{ marginTop: 100, display: 'flex', justifyContent: 'space-between', gap: 20, flexWrap: 'wrap' }}>
+            <span className="a-label">© {new Date().getFullYear()} Pravaha Tattva Solutions</span>
+            <Link to="/" className="a-label a-link">← Satwik K. Udupi · portfolio</Link>
+          </footer>
+        </section>
+      </LightboxProvider>
+    </AtlasShell>
+  </>
+);
 
 export default PravahaTattva;

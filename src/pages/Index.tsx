@@ -1,63 +1,51 @@
 import { Helmet } from 'react-helmet-async';
-import { motion } from 'framer-motion';
-import Navbar from '@/components/Navbar';
-import HeroSection from '@/components/HeroSection';
-import AboutSection from '@/components/AboutSection';
-import ExperienceSection from '@/components/ExperienceSection';
-import EducationSection from '@/components/EducationSection';
-import SkillsSection from '@/components/SkillsSection';
-import TechStackSection from '@/components/TechStackSection';
-import CertificationsSection from '@/components/CertificationsSection';
-import ProjectsSection from '@/components/ProjectsSection';
+import AtlasShell from '@/atlas/AtlasShell';
+import { LightboxProvider } from '@/atlas/ui';
+import Hero from '@/atlas/sections/Hero';
+import About from '@/atlas/sections/About';
+import Expertise from '@/atlas/sections/Expertise';
+import Work from '@/atlas/sections/Work';
+import Hydrocast from '@/atlas/sections/Hydrocast';
+import Atlas from '@/atlas/sections/Atlas';
+import Practice from '@/atlas/sections/Practice';
+import Toolbox from '@/atlas/sections/Toolbox';
+import Code from '@/atlas/sections/Code';
+import Certs from '@/atlas/sections/Certs';
+import PravahaBand from '@/atlas/sections/PravahaBand';
+import Contact from '@/atlas/sections/Contact';
 
-import MapGallerySection from '@/components/MapGallerySection';
-import GitHubProjectsSection from '@/components/GitHubProjectsSection';
-import ContactSection from '@/components/ContactSection';
-import Footer from '@/components/Footer';
+const nav = [
+  { label: 'Disciplines', href: '#expertise' },
+  { label: 'Work', href: '#work' },
+  { label: 'Hydrocast', href: '#hydrocast' },
+  { label: 'Atlas', href: '#atlas' },
+  { label: 'Practice', href: '#practice' },
+  { label: 'Toolbox', href: '#toolbox' },
+  { label: 'Contact', href: '#contact' },
+];
 
-const Index = () => {
-  return (
-    <>
-      <Helmet>
-        <title>Satwik Udupi | Hydrologist & GIS Analyst</title>
-        <meta 
-          name="description" 
-          content="Agricultural Engineer specializing in hydraulic modeling, watershed hydrology, and GIS analysis. Expert in HEC-RAS, HEC-HMS, and geospatial technologies for sustainable water resource management." 
-        />
-        <meta name="keywords" content="hydrologist, GIS analyst, HEC-RAS, HEC-HMS, watershed analysis, flood mapping, Maharashtra" />
-        <link rel="canonical" href="https://satwikudupi.com" />
-      </Helmet>
-
-      <div className="min-h-screen bg-background text-foreground">
-        <Navbar />
-        <main>
-          <HeroSection />
-          
-          {/* Section divider */}
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="w-full max-w-xl mx-auto h-px bg-gradient-to-r from-transparent via-border to-transparent"
-          />
-          
-          <AboutSection />
-          <ExperienceSection />
-          <EducationSection />
-          <SkillsSection />
-          <TechStackSection />
-          <CertificationsSection />
-          <ProjectsSection />
-          <GitHubProjectsSection />
-
-          <MapGallerySection />
-          <ContactSection />
-        </main>
-        <Footer />
-      </div>
-    </>
-  );
-};
-
+const Index = () => (
+  <>
+    <Helmet>
+      <title>Satwik K. Udupi — Hydrologist & GIS Analyst</title>
+      <meta name="description" content="Satwik K. Udupi — hydrologist and GIS analyst. Dam-break and flood modelling (HEC-RAS, HEC-HMS), watershed studies, remote sensing and the Hydrocast flood-prediction system. Founder, Pravaha Tattva Solutions." />
+    </Helmet>
+    <AtlasShell nav={nav} cta={{ label: 'Pravaha Tattva', to: '/pravaha-tattva' }} brand={<><span style={{ fontSize: 15 }}>◉</span><span>S.K.U<span className="brand-long"> — Hydrology & GIS</span></span></>}>
+      <LightboxProvider>
+        <Hero />
+        <About />
+        <Expertise />
+        <Work />
+        <Hydrocast />
+        <Atlas />
+        <Practice />
+        <Toolbox />
+        <Code />
+        <Certs />
+        <PravahaBand />
+        <Contact />
+      </LightboxProvider>
+    </AtlasShell>
+  </>
+);
 export default Index;

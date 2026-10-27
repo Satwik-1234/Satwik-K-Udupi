@@ -1,0 +1,206 @@
+@import '../fonts-atlas.css';
+
+/* ───────────────────────── Atlas design system ─────────────────────────
+   Editorial cartography: warm paper, ink-blue linework, one signal colour.
+   Everything is scoped to .atlas so legacy pages keep working.            */
+
+.atlas {
+  --paper: #f2ede2;
+  --paper-deep: #e8e1d0;
+  --paper-light: #f9f6ef;
+  --ink: #0f2236;
+  --ink-soft: #46596d;
+  --ink-faint: #566676;
+  --rule: rgba(15, 34, 54, 0.2);
+  --rule-strong: rgba(15, 34, 54, 0.55);
+  --water: #1c58a8;
+  --water-wash: #bcd3ee;
+  --signal: #d8472b;
+  --signal-ink: #ffffff;
+  --f-serif: 'Instrument Serif', 'Iowan Old Style', Georgia, serif;
+  --f-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --gutter: clamp(20px, 4vw, 56px);
+
+  position: relative;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-sans);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+.atlas.is-company {
+  --signal: #c99a1c;
+  --signal-ink: #0f1d4d;
+  --water: #213ba3;
+  --ink: #0d1a45;
+  --ink-soft: #435087;
+  --rule: rgba(13, 26, 69, 0.2);
+  --rule-strong: rgba(13, 26, 69, 0.55);
+  --water-wash: #c3cff2;
+}
+html.atlas-on, html.atlas-on body { background: #f2ede2; }
+html.atlas-on.is-company-page, html.atlas-on.is-company-page body { background: #f2ede2; }
+
+.atlas *, .atlas *::before, .atlas *::after { box-sizing: border-box; }
+.atlas ::selection { background: var(--signal); color: var(--signal-ink); }
+.atlas a { color: inherit; text-decoration: none; }
+.atlas img { max-width: 100%; display: block; }
+.atlas h1, .atlas h2, .atlas h3, .atlas h4, .atlas p { margin: 0; }
+.atlas ul { margin: 0; padding: 0; list-style: none; }
+.atlas button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+/* Type */
+.a-serif { font-family: var(--f-serif); font-weight: 400; letter-spacing: -0.01em; }
+.a-mono { font-family: var(--f-mono); }
+.atlas .a-label {
+  font-family: var(--f-mono); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft);
+}
+.a-display {
+  font-family: var(--f-serif); font-weight: 400;
+  font-size: clamp(3.2rem, 11.5vw, 11.5rem); line-height: 0.88; letter-spacing: -0.035em;
+}
+.a-h2 {
+  font-family: var(--f-serif); font-weight: 400;
+  font-size: clamp(2.4rem, 6vw, 5.4rem); line-height: 0.96; letter-spacing: -0.025em;
+}
+.a-h3 {
+  font-family: var(--f-serif); font-weight: 400;
+  font-size: clamp(1.7rem, 3vw, 2.6rem); line-height: 1.04; letter-spacing: -0.015em;
+}
+.a-lede { font-size: clamp(1.1rem, 1.6vw, 1.4rem); line-height: 1.45; color: var(--ink-soft); max-width: 44ch; }
+.a-em { font-style: italic; color: var(--signal); }
+.a-water { color: var(--water); }
+.a-rule { height: 1px; background: var(--rule-strong); border: 0; width: 100%; }
+.a-rule-soft { height: 1px; background: var(--rule); width: 100%; }
+
+/* Layout */
+.a-wrap { width: 100%; max-width: 1480px; margin: 0 auto; padding-inline: var(--gutter); }
+.a-section { position: relative; padding-block: clamp(72px, 10vw, 140px); }
+.a-plate-head {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center;
+  padding-bottom: 14px; margin-bottom: clamp(36px, 6vw, 80px); border-bottom: 1px solid var(--rule-strong);
+}
+.a-plate-head .num { font-family: var(--f-serif); font-size: 1.4rem; font-style: italic; color: var(--signal); }
+
+/* Buttons & tags */
+.atlas .a-btn {
+  display: inline-flex; align-items: center; gap: 12px; padding: 15px 24px;
+  font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500;
+  border: 1px solid var(--ink); border-radius: 0; background: transparent; color: var(--ink);
+  transition: background .3s, color .3s, transform .3s; position: relative; overflow: hidden;
+}
+.a-btn::before {
+  content: ''; position: absolute; inset: 0; background: var(--ink); transform: translateY(101%);
+  transition: transform .45s cubic-bezier(.2,.8,.2,1); z-index: 0;
+}
+.a-btn > * { position: relative; z-index: 1; }
+.a-btn:hover { color: var(--paper); }
+.a-btn:hover::before { transform: translateY(0); }
+.a-btn.solid { background: var(--signal); border-color: var(--signal); color: var(--signal-ink); }
+.a-btn.solid::before { background: var(--ink); }
+.a-btn.solid:hover { color: var(--paper); border-color: var(--ink); }
+
+.atlas .a-tag {
+  display: inline-block; font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em;
+  padding: 4px 9px; border: 1px solid var(--rule-strong); color: var(--ink);
+}
+.a-link { background: linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat; transition: background-size .4s; }
+.a-link:hover { background-size: 100% 1px; }
+
+/* Plates — framed map figures with registration marks */
+.a-plate { position: relative; background: var(--paper-light); border: 1px solid var(--rule-strong); padding: 10px; }
+.a-plate::before, .a-plate::after {
+  content: '+'; position: absolute; font-family: var(--f-mono); font-size: 14px; line-height: 1; color: var(--ink);
+  background: var(--paper); padding: 0 3px;
+}
+.a-plate::before { top: -9px; left: -7px; }
+.a-plate::after { bottom: -9px; right: -7px; }
+.a-plate > img, .a-plate > .fig { width: 100%; height: auto; background: var(--paper-deep); }
+.a-caption {
+  display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  margin-top: 12px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .06em; color: var(--ink-soft);
+}
+
+/* Spec table */
+.a-spec { display: grid; grid-template-columns: 110px 1fr; border-top: 1px solid var(--rule-strong); }
+.a-spec > div { padding: 12px 0; border-bottom: 1px solid var(--rule); font-size: 15px; }
+.a-spec > .k { font-family: var(--f-mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); padding-top: 15px; }
+
+/* Cursor */
+.a-cursor {
+  position: fixed; left: 0; top: 0; z-index: 9999; pointer-events: none; mix-blend-mode: difference;
+  width: 44px; height: 44px; margin: -22px 0 0 -22px; border: 1px solid #fff; border-radius: 50%;
+  transition: width .35s cubic-bezier(.2,.8,.2,1), height .35s cubic-bezier(.2,.8,.2,1), margin .35s cubic-bezier(.2,.8,.2,1), background .3s, border-color .3s;
+  display: grid; place-items: center; opacity: 0;
+}
+.a-cursor.on { opacity: 1; }
+.a-cursor::before, .a-cursor::after { content: ''; position: absolute; background: #fff; }
+.a-cursor::before { width: 9px; height: 1px; } .a-cursor::after { width: 1px; height: 9px; }
+.a-cursor span { position: absolute; font-family: var(--f-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--paper); opacity: 0; transition: opacity .2s; white-space: nowrap; }
+.a-cursor.hover { mix-blend-mode: normal; width: 92px; height: 92px; margin: -46px 0 0 -46px; background: var(--signal); border-color: var(--signal); }
+.a-cursor.hover::before, .a-cursor.hover::after { opacity: 0; }
+.a-cursor.hover span { opacity: 1; color: var(--signal-ink); }
+@media (pointer: coarse) { .a-cursor { display: none; } }
+
+/* Top bar & gauge */
+.a-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; justify-content: space-between; align-items: center;
+  padding: 14px var(--gutter); pointer-events: none;
+  background: linear-gradient(to bottom, rgba(242,237,226,.94) 60%, rgba(242,237,226,0));
+}
+.a-bar > * { pointer-events: auto; }
+.a-gauge {
+  position: fixed; right: clamp(10px, 1.6vw, 24px); top: 50%; transform: translateY(-50%); z-index: 55;
+  height: min(46vh, 380px); width: 34px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: .08em; color: var(--ink-soft);
+}
+.a-gauge .tube { position: relative; flex: 1; width: 8px; border: 1px solid var(--ink); background: transparent;
+  background-image: repeating-linear-gradient(to bottom, var(--ink) 0 1px, transparent 1px 12px); }
+.a-gauge .fill { position: absolute; left: 0; right: 0; bottom: 0; background: var(--water); }
+.a-gauge .bob { position: absolute; left: -6px; width: 18px; height: 1px; background: var(--signal); }
+@media (max-width: 900px) { .a-gauge { display: none; } }
+
+/* Marquee */
+.a-marquee { overflow: hidden; border-block: 1px solid var(--rule-strong); }
+.a-marquee-track { display: flex; width: max-content; animation: a-marq 46s linear infinite; }
+.a-marquee:hover .a-marquee-track { animation-play-state: paused; }
+@keyframes a-marq { to { transform: translateX(-50%); } }
+
+/* Reveal helpers */
+.a-mask { overflow: hidden; display: block; }
+.a-mask > span { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .a-marquee-track { animation: none; }
+}
+@media (max-width: 720px) {
+  .a-spec { grid-template-columns: 1fr; }
+  .a-spec > .k { padding-bottom: 0; border-bottom: 0; }
+}
+
+.a-bar nav a, .a-bar nav { white-space: nowrap; }
+@media (max-width: 1180px) { .brand-long { display: none; } .a-bar nav { gap: 18px !important; } }
+
+/* Accessibility */
+.atlas :focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+.atlas :focus:not(:focus-visible) { outline: none; }
+.a-skip { position: fixed; left: 12px; top: -60px; z-index: 1000; background: var(--ink); color: var(--paper); padding: 10px 14px; font-family: var(--f-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; transition: top .2s; }
+.a-skip:focus { top: 12px; }
+html { scroll-padding-top: 70px; }
+
+/* Print / Save-as-PDF: a clean, static document for recruiters */
+@media print {
+  canvas, .a-cursor, .a-gauge, .a-bar, .a-skip, .a-btn, .a-marquee { display: none !important; }
+  .atlas, .atlas * { background: #fff !important; color: #111 !important; box-shadow: none !important; }
+  .atlas section { padding-block: 22px !important; break-inside: auto; }
+  .atlas .a-display { font-size: 44px !important; }
+  .atlas .a-h2 { font-size: 28px !important; }
+  .atlas .a-plate img { max-height: 320px; object-fit: contain; }
+  .atlas [style*="clip-path"] { clip-path: none !important; }
+  @page { margin: 14mm; }
+}
