@@ -29,7 +29,7 @@ const App = () => {
         <TooltipProvider>
           <Toaster />
           <Sonner />
-          <BrowserRouter basename="/Satwik-K-Udupi">
+          <BrowserRouter>
             <ScrollManager />
             <Suspense fallback={<div style={{ minHeight: '100vh', background: '#f2ede2' }} />}>
             <Routes>

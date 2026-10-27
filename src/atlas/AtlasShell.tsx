@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Lenis from 'lenis';
-import { MotionConfig } from 'framer-motion';
 import Intro from './Intro';
 import ContourField from './ContourField';
 import '@/styles/atlas.css';
@@ -35,7 +34,6 @@ export default function AtlasShell({ children, variant = 'personal', nav, brand,
 
   // smooth scroll
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 0.9 });
     lenisRef.current = lenis;
     let raf = 0;
@@ -89,7 +87,6 @@ export default function AtlasShell({ children, variant = 'personal', nav, brand,
   const colors = isCompany ? COMPANY : {};
 
   return (
-    <MotionConfig reducedMotion="user">
     <div className={`atlas ${isCompany ? 'is-company' : ''}`}>
       <a href="#main" className="a-skip">Skip to content</a>
       {!isCompany && <Intro />}
@@ -132,6 +129,5 @@ export default function AtlasShell({ children, variant = 'personal', nav, brand,
 
       <main id="main" style={{ position: 'relative', zIndex: 2, ...(colors as object) }}>{children}</main>
     </div>
-    </MotionConfig>
   );
 }

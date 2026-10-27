@@ -203,12 +203,11 @@ export default function ContourField({
         rainBuf.set([r.x, r.y, r.age, r.active], i * 4);
       });
       gl.uniform1f(uTime, t); gl.uniform1f(uLevel, level);
-      gl.uniform2f(uMouse, mouse.x, mouse.y); gl.uniform1f(uMouseOn, reduce ? 0 : mouse.on);
+      gl.uniform2f(uMouse, mouse.x, mouse.y); gl.uniform1f(uMouseOn, mouse.on);
       gl.uniform4fv(uRain, rainBuf);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
-    if (reduce) { frame(performance.now()); cancelAnimationFrame(raf); window.addEventListener('scroll', () => frame(performance.now())); }
-    else raf = requestAnimationFrame(frame);
+    raf = requestAnimationFrame(frame);
 
     return () => {
       cancelAnimationFrame(raf);

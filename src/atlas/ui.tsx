@@ -147,6 +147,6 @@ export const pressable = (fn: () => void) => ({
 /** Whether the one-time intro will run this session (evaluated once, at load). */
 export const INTRO_WILL_RUN = (() => {
   try {
-    return typeof window !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !sessionStorage.getItem('sku-intro');
+    return typeof window !== 'undefined' && !sessionStorage.getItem('sku-intro');
   } catch { return false; }
 })();
