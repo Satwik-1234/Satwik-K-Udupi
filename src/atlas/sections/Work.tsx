@@ -60,8 +60,8 @@ const ProjectCard = ({ p, i, open }: { p: typeof plates[number]; i: number; open
 const HydrocastCard = () => (
   <article className="sci-app-card">
     <div className="sci-app-visual">
-      <div className="sci-app-topline"><span><i /> SYSTEM OUTPUT</span><span>90 H FORECAST</span></div>
-      <svg viewBox="0 0 620 230" role="img" aria-label="Illustrative hydrograph visual showing a rising and receding flood hydrograph">
+      <div className="sci-app-topline"><span><i /> INTERFACE PREVIEW · SCHEMATIC</span><span>90 H FORECAST</span></div>
+      <svg viewBox="0 0 620 230" role="img" aria-label="Schematic hydrograph used as a visual preview of the HydroCast application">
         <defs><linearGradient id="hydroFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#39b8a9" stopOpacity=".35"/><stop offset="1" stopColor="#39b8a9" stopOpacity="0"/></linearGradient></defs>
         {[40,90,140,190].map(y => <line key={y} x1="22" x2="600" y1={y} y2={y} stroke="rgba(210,230,236,.13)" strokeDasharray="3 7" />)}
         <path d="M22 184 C90 182 112 177 150 164 S215 123 248 78 S294 35 321 52 S360 105 393 131 S467 168 600 179 L600 205 L22 205Z" fill="url(#hydroFill)" />
