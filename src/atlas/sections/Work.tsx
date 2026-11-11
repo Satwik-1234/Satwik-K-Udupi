@@ -1,178 +1,138 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment } from 'react';
 import { plates, mapById, redacted } from '@/data/portfolio';
 import { projectsFull } from '@/data/legacy';
+import { pravahaProjects } from '@/data/portfolio';
 import { Disclosure, MaskLines, PlateHead, Reveal, pressable, useLightbox } from '../ui';
+import { HYDROCAST_LINKS } from '@/lib/hydrocast';
 
 const detailIdx: Record<string, number> = { koyna: 0, mula: 1, panch: 2 };
+const projectImages: Record<string, string> = {
+  koyna: 'overtop',
+  mula: 'risk',
+  panch: 'soil',
+};
+
 const Cols = ({ d }: { d: any }) => (
-  <div className="det-grid" style={{ display: 'grid', gap: '26px 36px' }}>
+  <div className="det-grid sci-method-grid">
     {([['Objectives', d.objectives], ['Datasets', d.datasets], ['Methodology', d.methodology], ['Analysis', d.analysis], ['Results', d.results]] as [string, string[]][]).filter(([, v]) => v?.length).map(([k, v]) => (
       <div key={k}>
-        <div className="a-label" style={{ color: 'var(--ink)', marginBottom: 10 }}>{k}</div>
-        <ul style={{ display: 'grid', gap: 7 }}>{v.map((x) => (<li key={x} style={{ display: 'grid', gridTemplateColumns: '28px 1fr', color: 'var(--ink-soft)', fontSize: 15 }}><span style={{ color: 'var(--signal)' }}>—</span><span>{x}</span></li>))}</ul>
+        <div className="a-label sci-method-label">{k}</div>
+        <ul className="sci-method-list">{v.map((x) => <li key={x}><span>—</span>{x}</li>)}</ul>
       </div>
     ))}
-    <div><div className="a-label" style={{ color: 'var(--ink)', marginBottom: 10 }}>Skills applied</div><div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>{d.skills.map((t: string) => <span className="a-tag" key={t}>{t}</span>)}</div></div>
+    <div>
+      <div className="a-label sci-method-label">Skills applied</div>
+      <div className="sci-tags">{d.skills.map((t: string) => <span className="a-tag" key={t}>{t}</span>)}</div>
+    </div>
   </div>
 );
 
-/* Drag-to-compare slider: two maps, one clip. */
-const Compare = ({ a, b, la, lb }: { a: string; b: string; la: string; lb: string }) => {
-  const [pos, setPos] = useState(55);
-  const box = useRef<HTMLDivElement>(null);
-  const drag = useRef(false);
-  const set = (x: number) => {
-    const r = box.current!.getBoundingClientRect();
-    setPos(Math.max(0, Math.min(100, ((x - r.left) / r.width) * 100)));
-  };
+const ProjectCard = ({ p, i, open }: { p: typeof plates[number]; i: number; open: (id: string) => void }) => {
+  const map = mapById(projectImages[p.id]);
+  const detail = projectsFull[detailIdx[p.id]];
+  const repo = p.id === 'koyna' ? 'https://github.com/007-Wik' : '';
   return (
-    <div>
-      <div className="a-plate">
-        <div ref={box} data-cursor="Drag" className="fig"
-          style={{ position: 'relative', aspectRatio: '1123 / 794', overflow: 'hidden', touchAction: 'pan-y', userSelect: 'none' }}
-          onPointerDown={(e) => { drag.current = true; (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); set(e.clientX); }}
-          onPointerMove={(e) => drag.current && set(e.clientX)}
-          onPointerUp={() => (drag.current = false)}>
-          <img src={b} alt={lb} draggable={false} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-          <img src={a} alt={la} draggable={false} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', clipPath: `inset(0 ${100 - pos}% 0 0)` }} />
-          <div style={{ position: 'absolute', top: 0, bottom: 0, left: `${pos}%`, width: 2, background: 'var(--signal)', transform: 'translateX(-1px)' }}>
-            <div style={{ position: 'absolute', top: '50%', left: '50%', width: 46, height: 46, transform: 'translate(-50%,-50%)', borderRadius: '50%', background: 'var(--signal)', color: 'var(--signal-ink)', display: 'grid', placeItems: 'center', fontFamily: 'var(--f-mono)', fontSize: 14 }}>↔</div>
-          </div>
-          <span className="a-label" style={{ position: 'absolute', left: 12, bottom: 12, background: 'rgba(242,237,226,.9)', padding: '4px 8px', color: 'var(--ink)' }}>{la}</span>
-          <span className="a-label" style={{ position: 'absolute', right: 12, bottom: 12, background: 'rgba(242,237,226,.9)', padding: '4px 8px', color: 'var(--ink)' }}>{lb}</span>
+    <article className="sci-project-card">
+      <button className="sci-project-media" onClick={() => open(map.id)} aria-label={`Open ${map.title}`} data-cursor="Inspect result">
+        <img src={map.src} alt={map.title} loading="lazy" />
+        <span className="sci-media-index">FIG. 0{i + 1}</span>
+        <span className="sci-media-open">↗</span>
+      </button>
+      <div className="sci-project-body">
+        <div className="sci-project-meta"><span>{p.kicker}</span><span>{p.period}</span></div>
+        <h3>{p.title}</h3>
+        <p className="sci-project-summary">{p.summary}</p>
+        <div className="sci-project-finding"><span>KEY RESULT</span><p>{p.finding}</p></div>
+        <div className="sci-project-tools">{p.spec[0][1].split(' · ').slice(0, 4).map((tool) => <span key={tool}>{tool}</span>)}</div>
+        <div className="sci-project-actions">
+          <button type="button" onClick={() => open(map.id)}>View result image ↗</button>
+          {repo && <a href={repo} target="_blank" rel="noreferrer">Research repositories ↗</a>}
         </div>
+        <Disclosure head={<span className="sci-disclosure-label">Method, datasets & detailed results</span>}>
+          <Cols d={detail} />
+          <div className="sci-detail-spec">
+            {p.spec.map(([k, v]) => <Fragment key={k}><span>{k}</span><p>{v}</p></Fragment>)}
+            <span>Study period</span><p>{p.period} · {p.context}</p>
+          </div>
+        </Disclosure>
       </div>
-      <input type="range" min={0} max={100} value={pos} onChange={(e) => setPos(+e.target.value)} aria-label="Compare scenarios" style={{ width: '100%', marginTop: 14, accentColor: 'var(--signal)' }} />
-    </div>
+    </article>
   );
 };
 
-const RegRow = ({ url, children }: { url: string; children: React.ReactNode }) =>
-  url ? <a href={url} target="_blank" rel="noopener noreferrer" data-cursor="Open" style={{ display: 'block' }}>{children}</a> : <>{children}</>;
+const HydrocastCard = () => (
+  <article className="sci-app-card">
+    <div className="sci-app-visual">
+      <div className="sci-app-topline"><span><i /> SYSTEM OUTPUT</span><span>90 H FORECAST</span></div>
+      <svg viewBox="0 0 620 230" role="img" aria-label="Illustrative hydrograph visual showing a rising and receding flood hydrograph">
+        <defs><linearGradient id="hydroFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#39b8a9" stopOpacity=".35"/><stop offset="1" stopColor="#39b8a9" stopOpacity="0"/></linearGradient></defs>
+        {[40,90,140,190].map(y => <line key={y} x1="22" x2="600" y1={y} y2={y} stroke="rgba(210,230,236,.13)" strokeDasharray="3 7" />)}
+        <path d="M22 184 C90 182 112 177 150 164 S215 123 248 78 S294 35 321 52 S360 105 393 131 S467 168 600 179 L600 205 L22 205Z" fill="url(#hydroFill)" />
+        <path d="M22 184 C90 182 112 177 150 164 S215 123 248 78 S294 35 321 52 S360 105 393 131 S467 168 600 179" fill="none" stroke="#52c7b7" strokeWidth="3" />
+        <line x1="321" x2="321" y1="22" y2="205" stroke="#e1b85c" strokeDasharray="4 5" />
+        <circle cx="321" cy="52" r="5" fill="#e1b85c" />
+        <text x="335" y="35" fill="#e1b85c" fontSize="11" fontFamily="monospace">MODELLED PEAK</text>
+        <text x="22" y="222" fill="#a9bac6" fontSize="10" fontFamily="monospace">T + 00 H</text>
+        <text x="600" y="222" textAnchor="end" fill="#a9bac6" fontSize="10" fontFamily="monospace">T + 90 H</text>
+      </svg>
+      <div className="sci-app-foot"><span>Rainfall → Runoff → Routing → Stage</span><span>HydroCast / Panchganga</span></div>
+    </div>
+    <div className="sci-app-copy">
+      <div className="sci-project-meta"><span>OPERATIONAL WEB APPLICATION</span><span>CCCSS · DST-SERB</span></div>
+      <h3>HydroCast — Panchganga flood forecasting</h3>
+      <p>Forecast dashboard connecting weather-model rainfall, hydrological simulation and river-stage monitoring. The public interface provides forecast cycles, hydrographs and a runoff exploration tool.</p>
+      <div className="sci-project-tools"><span>HEC-HMS</span><span>Python</span><span>FastAPI</span><span>PostGIS</span><span>Next.js</span></div>
+      <div className="sci-project-actions">
+        <a className="sci-app-primary" href={HYDROCAST_LINKS.dashboard} target="_blank" rel="noreferrer">Open live dashboard ↗</a>
+        <a href={HYDROCAST_LINKS.docs} target="_blank" rel="noreferrer">Technical documentation ↗</a>
+        <a href={HYDROCAST_LINKS.repo} target="_blank" rel="noreferrer">Source repository ↗</a>
+      </div>
+    </div>
+  </article>
+);
 
 const Work = () => {
   const { open } = useLightbox();
   return (
-    <section id="work" className="a-section" style={{ background: 'rgba(242,237,226,.9)' }}>
+    <section id="work" className="a-section sci-projects">
       <div className="a-wrap">
-        <PlateHead n="03" label="Selected work" right="Three studies" />
-        <h2 className="a-h2" style={{ maxWidth: '14ch', marginBottom: 'clamp(50px,8vw,120px)' }}>
-          <MaskLines lines={[<>Maps that</>, <>change <span className="a-em">decisions.</span></>]} />
-        </h2>
-
-        <div style={{ display: 'grid', gap: 'clamp(80px,12vw,180px)' }}>
-          {plates.map((p, i) => {
-            const flip = i % 2 === 1;
-            return (
-              <article key={p.id} id={p.id} className="work-plate" style={{ display: 'grid', gap: 'clamp(28px,4vw,64px)' }}>
-                <div style={{ order: flip ? 2 : 1 }} className="work-copy">
-                  <Reveal>
-                    <div className="a-label" style={{ display: 'flex', gap: 14 }}>
-                      <span style={{ color: 'var(--signal)' }}>Study {p.n}</span><span>{p.kicker}</span>
-                    </div>
-                    <h3 className="a-h3" style={{ fontSize: 'clamp(2.1rem,4.2vw,3.8rem)', margin: '16px 0 22px' }}>{p.title}</h3>
-                    <p style={{ color: 'var(--ink-soft)', fontSize: 18, maxWidth: '48ch' }}>{p.summary}</p>
-                    <p style={{ marginTop: 18, maxWidth: '48ch', fontSize: 18 }}>
-                      <span className="a-label" style={{ color: 'var(--signal)', marginRight: 10 }}>Finding</span>{p.finding}
-                    </p>
-                    <div className="a-spec" style={{ marginTop: 30 }}>
-                      {p.spec.map(([k, v]) => (<Fragment key={k}><div className="k">{k}</div><div>{v}</div></Fragment>))}
-                      <div className="k">When</div><div>{p.period} · {p.context}</div>
-                    </div>
-                  </Reveal>
-                </div>
-                <div style={{ order: flip ? 1 : 2 }}>
-                  <Reveal delay={0.1}>
-                    {p.id === 'koyna' ? (
-                      <Compare a={mapById('controlled').src} b={mapById('overtop').src} la="Controlled release" lb="Overtopping failure" />
-                    ) : (
-                      <div className="a-plate" data-cursor="Zoom" aria-label={`Enlarge: ${mapById(p.maps[0]).title}`} {...pressable(() => open(p.maps[0]))} style={{ cursor: 'none' }}>
-                        <img src={mapById(p.maps[0]).src} alt={mapById(p.maps[0]).title} loading="lazy" />
-                      </div>
-                    )}
-                    <div className="a-caption">
-                      <span>Fig. {p.n} — {p.id === 'koyna' ? 'Max flood depth, Koyna → Krishna valley' : mapById(p.maps[0]).title}</span>
-                      <span>{p.id === 'koyna' ? 'Drag to compare' : 'Click to enlarge'}</span>
-                    </div>
-                  </Reveal>
-                </div>
-                <div style={{ gridColumn: '1 / -1', order: 3 }}>
-                  <Disclosure head={<span className="a-label" style={{ color: 'var(--ink)' }}>Full method, data &amp; results — {projectsFull[detailIdx[p.id]].title}</span>}>
-                    <Cols d={projectsFull[detailIdx[p.id]]} />
-                  </Disclosure>
-                  <div className="a-rule" />
-                </div>
-              </article>
-            );
-          })}
+        <PlateHead n="03" label="Selected work" right="Research · Engineering · Digital systems" />
+        <div className="sci-project-heading">
+          <div>
+            <span className="sci-section-eyebrow">A FIELD REGISTER OF PROJECTS</span>
+            <h2 className="a-h2"><MaskLines lines={[<>Evidence,</>, <>not just <span className="a-em">outputs.</span></>]} /></h2>
+          </div>
+          <p>Selected studies, engineering assignments and digital tools. Open a result to inspect the map, or expand a case study for its datasets and method.</p>
         </div>
 
-        {/* Other builds */}
-        <div style={{ marginTop: 'clamp(90px,13vw,190px)' }}>
-          <PlateHead n="03a" label="Engineering builds" right="Design & mechanics" />
-          <div className="ob-grid" style={{ display: 'grid', gap: 'clamp(18px,3vw,40px)' }}>
-            {[projectsFull[3], projectsFull[4]].map((d: any, k: number) => (
-              <Reveal key={d.title} delay={k * 0.08}>
-                <div style={{ borderTop: '1px solid var(--rule-strong)', paddingTop: 20 }}>
-                  <div className="a-label">{d.duration}</div>
-                  <h3 className="a-h3" style={{ margin: '10px 0 18px' }}>{d.title}</h3>
-                  <div className="ob-det"><Cols d={d} /></div>
-                </div>
+        <div className="sci-project-grid">
+          {plates.map((p, i) => <Reveal key={p.id} delay={i * 0.08}><ProjectCard p={p} i={i} open={open} /></Reveal>)}
+        </div>
+
+        <div className="sci-app-section">
+          <div className="sci-subhead"><span className="sci-section-eyebrow">BEYOND STATIC MAPS</span><span>02 / WEB APPLICATIONS & TOOLS</span></div>
+          <HydrocastCard />
+        </div>
+
+        <div className="sci-register">
+          <div className="sci-register-intro">
+            <span className="sci-section-eyebrow">PROJECT INDEX</span>
+            <h3>More work, <em>on record.</em></h3>
+            <p>Additional dam-safety, flood-frequency and GIS engagements. Public repositories are linked where available; confidential assignments remain appropriately limited.</p>
+          </div>
+          <div className="sci-register-list">
+            {redacted.map((r, i) => (
+              <Reveal key={r.code} delay={Math.min(i, 5) * .035}>
+                <a className="sci-register-row" href={r.url || undefined} target={r.url ? '_blank' : undefined} rel={r.url ? 'noreferrer' : undefined} aria-disabled={!r.url}>
+                  <span className="sci-register-code">{r.code}</span>
+                  <span className="sci-register-content"><strong>{r.scope}</strong><small>{r.client === 'Withheld' ? 'Client details withheld' : r.client}</small><small>{r.method} · {r.tools}</small></span>
+                  <span className="sci-register-status">{r.status} {r.url ? '↗' : '·'}</span>
+                </a>
               </Reveal>
             ))}
           </div>
         </div>
-
-        {/* Field register — government & confidential work */}
-        <div style={{ marginTop: 'clamp(90px,13vw,200px)' }}>
-          <PlateHead n="03b" label="Client register" right="Government, institutional & CSR work" />
-          <div style={{ display: 'grid', gap: 24 }} className="reg-grid">
-            <Reveal>
-              <h3 className="a-h3" style={{ maxWidth: '16ch' }}>Work for clients, <span className="a-em">on the record.</span></h3>
-              <p className="a-lede" style={{ marginTop: 18 }}>
-                Dam-safety, flood-frequency and CSR engagements, each with a public method record. Client documents stay with the client; further government work is held under confidentiality.
-              </p>
-            </Reveal>
-            <div>
-              {redacted.map((r, i) => (
-                <Reveal key={r.code} delay={Math.min(i, 5) * 0.05}>
-                  <RegRow url={r.url}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '78px 1fr auto', gap: 18, padding: '22px 0', borderTop: '1px solid var(--rule-strong)', alignItems: 'start' }} className="reg-row">
-                    <span className="a-label" style={{ color: 'var(--signal)', paddingTop: 4 }}>{r.code}</span>
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: 18 }}>{r.scope}</div>
-                      <p style={{ color: 'var(--ink-soft)', marginTop: 4 }}>
-                        {r.client === 'Withheld' ? <span className="redact">Client name withheld here</span> : r.client}
-                      </p>
-                      <p className="a-mono" style={{ fontSize: 12, marginTop: 8, color: 'var(--ink-soft)' }}>
-                        {r.code === 'GOV-X' ? <><span className="redact">methods and datasets redacted</span> · {r.method}</> : <>{r.method} · {r.tools}</>}
-                      </p>
-                    </div>
-                    <span className="a-label" style={{ border: '1px solid var(--rule-strong)', padding: '4px 8px', whiteSpace: 'nowrap', transform: 'rotate(-2deg)' }}>{r.status}</span>
-                  </div>
-                  </RegRow>
-                </Reveal>
-              ))}
-              <div className="a-rule" />
-            </div>
-          </div>
-        </div>
       </div>
-      <style>{`
-        .work-plate{grid-template-columns:1fr}
-        .det-grid{grid-template-columns:1fr}
-        .ob-grid{grid-template-columns:1fr}
-        @media(min-width:760px){.det-grid{grid-template-columns:1fr 1fr}}
-        @media(min-width:960px){.ob-grid{grid-template-columns:1fr 1fr}.ob-det .det-grid{grid-template-columns:1fr 1fr}}
-        .reg-grid{grid-template-columns:1fr}
-        .redact{background:var(--ink);color:transparent;user-select:none;padding:0 .3em;display:inline-block;line-height:1.1}
-        @media(min-width:960px){
-          .work-plate{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:center}
-          .work-plate:nth-child(even){grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
-          .reg-grid{grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:80px}
-        }
-        @media(max-width:600px){.reg-row{grid-template-columns:1fr !important}}
-      `}</style>
     </section>
   );
 };
