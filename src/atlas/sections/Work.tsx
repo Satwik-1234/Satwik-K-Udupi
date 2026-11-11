@@ -5,6 +5,19 @@ import { Disclosure, MaskLines, PlateHead, Reveal, pressable, useLightbox } from
 import { HYDROCAST_LINKS } from '@/lib/hydrocast';
 
 const detailIdx: Record<string, number> = { koyna: 0, mula: 1, panch: 2 };
+
+const digitalProjects = [
+  { id: '01', title: 'Panchganga FloodWatch', category: 'Flood monitoring · Web application', note: 'Public flood-monitoring interface for the Panchganga basin.', live: 'https://satwikcccss-crypto.github.io/PanchgangaFloodwatch/', liveLabel: 'Open application' },
+  { id: '02', title: 'Panchganga HydroCast', category: 'Flood forecasting · Dashboard', note: 'Forecast dashboard with hydrological outputs and monitoring views.', live: 'https://cccss-suk-panchganga-hydrocast.vercel.app/dashboard', liveLabel: 'Open dashboard', repo: 'https://github.com/satwikcccss-crypto/CCCSS-SUK-Panchganga_Hydrocast' },
+  { id: '03', title: 'Panchganga RainWatch', category: 'Rainfall monitoring · Data system', note: 'Repository for the Panchganga rainfall-monitoring work.', repo: 'https://github.com/satwikcccss-crypto/PanchgangaRainwatch' },
+  { id: '04', title: 'Western Maharashtra RUSLE', category: 'Soil erosion · Interactive application', note: 'Streamlit application for regional soil-erosion assessment.', live: 'https://ruslewestern-maharashtrav1.streamlit.app/', liveLabel: 'Open application' },
+  { id: '05', title: 'Bori Dam breach outputs', category: 'Dam safety · HEC-RAS results', note: 'Published output maps and plots for the Bori Dam breach study.', repo: 'https://github.com/Satwik-1234/BORI-DAM-breach-plots-/tree/main/outputs' },
+  { id: '06', title: 'Pravara basin analysis', category: 'Morphometry · Hydrological GIS', note: 'Spatial outputs from the advanced Pravara River Basin analysis.', repo: 'https://github.com/Satwik-1234/Pravara-River-Basin-Advanced-Morphometric-Hydrological-Analysis/tree/main/outputs' },
+  { id: '07', title: 'Ghod basin sedimentation', category: 'Reservoir sedimentation · Notebook', note: 'Jupyter notebook for sedimentation volume analysis.', repo: 'https://github.com/Satwik-1234/Ghod_basin_study/blob/main/Sedimentation%20Analysis/%20Sedimentation%20Volume%20Analysis.ipynb' },
+  { id: '08', title: 'Godavari flood visualisation', category: 'Flood mapping · Geospatial visualisation', note: 'Published visualisation assets and map outputs.', repo: 'https://github.com/Satwik-1234/Godavari-Flood-Visualization/tree/main/assets' },
+  { id: '09', title: 'Mahad flood visualisation', category: 'Flood mapping · Google Earth Engine', note: 'Geospatial assets for the Mahad flood visualisation work.', repo: 'https://github.com/Satwik-1234/Mahad-flood-vizuilization-GEE/tree/main/assets' },
+  { id: '10', title: 'Pulsar N250 tracker', category: 'Independent web tool', note: 'A personal vehicle-tracking application; included separately from the hydrology research portfolio.', live: 'https://satwiks-n250-tracker.vercel.app/', liveLabel: 'Open application' },
+];
 const projectImages: Record<string, string> = {
   koyna: 'overtop',
   mula: 'risk',
@@ -110,6 +123,28 @@ const Work = () => {
           <div className="sci-subhead"><span className="sci-section-eyebrow">BEYOND STATIC MAPS</span><span>02 / WEB APPLICATIONS & TOOLS</span></div>
           <HydrocastCard />
         </div>
+
+        <section className="sci-digital-section" aria-labelledby="digital-projects-heading">
+          <div className="sci-subhead"><span className="sci-section-eyebrow">DIGITAL WORK & RESEARCH OUTPUTS</span><span>03 / APPLICATIONS · REPOSITORIES · NOTEBOOKS</span></div>
+          <div className="sci-digital-intro">
+            <h3 id="digital-projects-heading">From model outputs to <em>working tools.</em></h3>
+            <p>Selected live applications, public repositories and reproducible analysis notebooks. Each link opens the original project source or deployment.</p>
+          </div>
+          <div className="sci-digital-grid">
+            {digitalProjects.map((project) => (
+              <article className="sci-digital-card" key={project.id}>
+                <div className="sci-digital-card-top"><span>{project.id} / PROJECT RECORD</span><span className="sci-digital-mark">↗</span></div>
+                <div className="sci-project-meta"><span>{project.category}</span></div>
+                <h4>{project.title}</h4>
+                <p>{project.note}</p>
+                <div className="sci-project-actions">
+                  {project.live && <a className="sci-app-primary" href={project.live} target="_blank" rel="noreferrer">{project.liveLabel || 'Open live project'} ↗</a>}
+                  {project.repo && <a href={project.repo} target="_blank" rel="noreferrer">Source / outputs ↗</a>}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
 
         <div className="sci-register">
           <div className="sci-register-intro">
