@@ -245,3 +245,45 @@ html.atlas-on, html.atlas-on body { background: #f7f8f6; }
 .sci-digital-card .sci-project-actions { padding-top: 20px; }
 @media(max-width:900px) { .sci-digital-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
 @media(max-width:640px) { .sci-digital-intro { grid-template-columns: 1fr; gap: 14px; } .sci-digital-grid { grid-template-columns: 1fr; } .sci-digital-card > p { min-height: 0; } }
+
+
+/* Portfolio opening spread */
+.atlas .sci-hero { position: relative; min-height: min(920px,100svh); min-height: max(720px,100svh); display: flex; align-items: center; padding: clamp(118px,15vh,170px) 0 42px; overflow: hidden; background: #10191f; color: #edf2ef; isolation: isolate; }
+.sci-hero::before { content: ""; position: absolute; inset: 0; z-index: -2; background: radial-gradient(ellipse at 74% 44%,rgba(33,106,108,.2),transparent 42%),linear-gradient(115deg,rgba(8,15,20,.98),rgba(14,27,34,.92)); }
+.sci-hero::after { content: ""; position: absolute; inset: 0; z-index: -1; opacity: .22; pointer-events: none; background-image: url("/assets/topographical_map_art_bg.svg"); background-size: 1050px auto; background-position: 65% 45%; mask-image: linear-gradient(90deg,transparent 0%,#000 48%,#000 100%); }
+.sci-hero-grid { position: absolute; inset: 0; z-index: -1; opacity: .18; pointer-events: none; background-image: linear-gradient(rgba(178,208,206,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(178,208,206,.12) 1px,transparent 1px); background-size: 82px 82px; mask-image: linear-gradient(90deg,transparent,#000 65%); }
+.sci-hero-inner { display: flex; flex-direction: column; justify-content: space-between; min-height: min(690px,75vh); }
+.sci-kicker { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; color: #b4c2c3; font: 500 9px var(--f-mono); letter-spacing: .14em; text-transform: uppercase; }
+.sci-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #72c9bd; box-shadow: 0 0 0 4px rgba(114,201,189,.12),0 0 15px rgba(114,201,189,.55); }
+.sci-kicker-location { margin-left: auto; color: #819397; }
+.sci-hero-copy { max-width: 980px; padding: clamp(52px,9vh,100px) 0 clamp(58px,10vh,112px); }
+.sci-title { color: #edf2ef; font: 400 clamp(5.1rem,14vw,12.8rem)/.79 var(--f-serif); letter-spacing: -.045em; }
+.sci-title-accent { color: #72c9bd; font-style: italic; }
+.sci-hero-deck { max-width: 540px; margin-top: clamp(28px,5vw,52px); color: #b2c0c2; font-size: clamp(15px,1.5vw,19px); line-height: 1.7; }
+.sci-hero-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 22px; margin-top: 28px; }
+.atlas .sci-hero .a-btn { border-color: rgba(226,239,236,.6); color: #edf2ef; }
+.atlas .sci-hero .a-btn.solid { background: #72c9bd; border-color: #72c9bd; color: #102027; }
+.atlas .sci-hero .a-btn::before { background: #edf2ef; }
+.atlas .sci-hero .a-btn:hover { color: #102027; }
+.sci-text-link { color: #a8c2c1; font: 500 9px var(--f-mono); letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid rgba(114,201,189,.5); padding: 0 0 6px; }
+.sci-hero-foot { display: grid; grid-template-columns: 1fr 1fr auto; gap: 28px; align-items: end; padding-top: 22px; border-top: 1px solid rgba(214,231,229,.18); }
+.sci-hero-foot > div { display: grid; gap: 6px; }
+.sci-micro-label { color: #72c9bd; font: 500 8px var(--f-mono); letter-spacing: .15em; }
+.sci-hero-foot strong { color: #e2eae7; font-size: 12px; font-weight: 600; }
+.sci-hero-foot > div > span:last-child { color: #8fa1a5; font-size: 10px; line-height: 1.5; }
+.sci-scroll-cue { color: #aab9bb; font: 500 8px var(--f-mono); letter-spacing: .12em; white-space: nowrap; }
+.sci-scroll-cue span { color: #72c9bd; margin-left: 8px; font-size: 14px; }
+.sci-progress { position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 2px; background: #72c9bd; transform: scaleX(0); transform-origin: left center; pointer-events: none; }
+@media(max-width:720px) {
+ .atlas .sci-hero { min-height: 100svh; padding: 112px 0 28px; }
+ .sci-hero-inner { min-height: calc(100svh - 140px); }
+ .sci-title { font-size: clamp(4.6rem,19vw,8rem); }
+ .sci-kicker { font-size: 8px; }
+ .sci-kicker-location { width: 100%; margin-left: 19px; }
+ .sci-hero-copy { padding: 58px 0 64px; }
+ .sci-hero-foot { grid-template-columns: 1fr 1fr; gap: 20px 14px; }
+ .sci-scroll-cue { grid-column: 1 / -1; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .sci-live-dot { box-shadow: none; }
+}
