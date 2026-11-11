@@ -4,6 +4,7 @@ import Lenis from 'lenis';
 import Intro from './Intro';
 import ContourField from './ContourField';
 import '@/styles/atlas.css';
+import '@/styles/scientific.css';
 
 export const lenisRef: { current: Lenis | null } = { current: null };
 
@@ -21,9 +22,7 @@ const COMPANY = { ink: '#0d1a45', water: '#213ba3', wash: '#c3cff2', signal: '#c
 export default function AtlasShell({ children, variant = 'personal', nav, brand, cta }: ShellProps) {
   const cursorRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
-  const fillRef = useRef<HTMLDivElement>(null);
-  const bobRef = useRef<HTMLDivElement>(null);
-  const readoutRef = useRef<HTMLSpanElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
   const [menu, setMenu] = useState(false);
   const isCompany = variant === 'company';
 
@@ -34,6 +33,7 @@ export default function AtlasShell({ children, variant = 'personal', nav, brand,
 
   // smooth scroll
   useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 0.9 });
     lenisRef.current = lenis;
     let raf = 0;
@@ -50,14 +50,15 @@ export default function AtlasShell({ children, variant = 'personal', nav, brand,
     return () => { cancelAnimationFrame(raf); lenis.destroy(); lenisRef.current = null; document.removeEventListener('click', onClick); };
   }, []);
 
-  // cursor + gauge
+  // Cursor and neutral reading progress; never imply that page scroll is sensor data.
   useEffect(() => {
     const cur = cursorRef.current;
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     let x = 0, y = 0, cx = 0, cy = 0, raf = 0;
     const move = (e: PointerEvent) => { x = e.clientX; y = e.clientY; cur?.classList.add('on'); };
     const over = (e: MouseEvent) => {
-      const t = (e.target as HTMLElement).closest('[data-cursor]') as HTMLElement | null;
-      if (t && cur && labelRef.current) { labelRef.current.textContent = t.dataset.cursor || ''; cur.classList.add('hover'); }
+      const target = (e.target as HTMLElement).closest('[data-cursor]') as HTMLElement | null;
+      if (target && cur && labelRef.current) { labelRef.current.textContent = target.dataset.cursor || ''; cur.classList.add('hover'); }
       else cur?.classList.remove('hover');
     };
     const tick = () => {
@@ -65,22 +66,25 @@ export default function AtlasShell({ children, variant = 'personal', nav, brand,
       if (cur) cur.style.transform = `translate3d(${cx}px,${cy}px,0)`;
       raf = requestAnimationFrame(tick);
     };
-    const gauge = () => {
+    const progress = () => {
       const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      const p = Math.min(1, window.scrollY / max);
-      if (fillRef.current) fillRef.current.style.height = `${p * 100}%`;
-      if (bobRef.current) bobRef.current.style.bottom = `${p * 100}%`;
-      if (readoutRef.current) readoutRef.current.textContent = (p * 18.26).toFixed(1);
+      const ratio = Math.min(1, Math.max(0, window.scrollY / max));
+      if (progressRef.current) progressRef.current.style.transform = `scaleX(${ratio})`;
     };
-    window.addEventListener('pointermove', move, { passive: true });
-    document.addEventListener('mouseover', over);
-    window.addEventListener('scroll', gauge, { passive: true });
-    gauge(); raf = requestAnimationFrame(tick);
+    if (finePointer) {
+      window.addEventListener('pointermove', move, { passive: true });
+      document.addEventListener('mouseover', over);
+      raf = requestAnimationFrame(tick);
+    }
+    window.addEventListener('scroll', progress, { passive: true });
+    window.addEventListener('resize', progress, { passive: true });
+    progress();
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('pointermove', move);
       document.removeEventListener('mouseover', over);
-      window.removeEventListener('scroll', gauge);
+      window.removeEventListener('scroll', progress);
+      window.removeEventListener('resize', progress);
     };
   }, []);
 
@@ -89,6 +93,7 @@ export default function AtlasShell({ children, variant = 'personal', nav, brand,
   return (
     <div className={`atlas ${isCompany ? 'is-company' : ''}`}>
       <a href="#main" className="a-skip">Skip to content</a>
+      <div className="sci-progress" ref={progressRef} aria-hidden="true" />
       {!isCompany && <Intro />}
       <ContourField {...(isCompany ? { ink: COMPANY.ink, water: COMPANY.water, wash: COMPANY.wash, signal: COMPANY.signal } : {})} />
       <div className="a-cursor" ref={cursorRef}><span ref={labelRef} /></div>
@@ -120,13 +125,6 @@ export default function AtlasShell({ children, variant = 'personal', nav, brand,
           <Link to={cta.to} className="a-btn solid" style={{ marginTop: 'auto', justifyContent: 'center' }}><span>{cta.label} ↗</span></Link>
         </div>
       )}
-
-      <aside className="a-gauge" aria-hidden="true">
-        <span ref={readoutRef}>0.0</span>
-        <div className="tube"><div className="fill" ref={fillRef} /><div className="bob" ref={bobRef} /></div>
-        <span>m</span>
-      </aside>
-
       <main id="main" style={{ position: 'relative', zIndex: 2, ...(colors as object) }}>{children}</main>
     </div>
   );
