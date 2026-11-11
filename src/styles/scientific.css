@@ -227,3 +227,21 @@ html.atlas-on, html.atlas-on body { background: #f7f8f6; }
 .sci-projects .sci-project-card .sci-method-label { color: var(--project-accent) !important; }
 .sci-projects .sci-project-card .sci-disclosure-label { color: var(--project-accent); }
 .sci-projects .sci-project-card .a-mono { color: var(--project-muted); }
+
+
+/* Additional live applications and public project records */
+.sci-digital-section { margin-top: clamp(70px,9vw,120px); }
+.sci-digital-intro { display: grid; grid-template-columns: 1fr minmax(240px,.65fr); gap: 30px; align-items: end; margin: 0 0 26px; }
+.sci-digital-intro h3 { max-width: 15ch; color: var(--project-text); font: 400 clamp(2rem,4vw,3.6rem)/1 var(--f-serif); }
+.sci-digital-intro h3 em { color: var(--project-accent); }
+.sci-digital-intro p { max-width: 45ch; color: var(--project-muted); font-size: 13px; line-height: 1.7; }
+.sci-digital-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.sci-digital-card { min-width: 0; display: flex; flex-direction: column; padding: 19px; background: rgba(23,34,41,.86); border: 1px solid var(--project-line); border-radius: 6px; transition: border-color .3s, transform .3s, background .3s; }
+.sci-digital-card:hover { transform: translateY(-3px); border-color: rgba(114,201,189,.48); background: rgba(27,41,49,.98); }
+.sci-digital-card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; color: var(--project-muted); font: 500 8px var(--f-mono); letter-spacing: .12em; }
+.sci-digital-mark { display: grid; place-items: center; width: 25px; height: 25px; border: 1px solid var(--project-line); border-radius: 50%; color: var(--project-accent); font-size: 12px; }
+.sci-digital-card h4 { margin: 10px 0 8px; color: var(--project-text); font: 400 clamp(1.35rem,2vw,1.8rem)/1.05 var(--f-serif); }
+.sci-digital-card > p { min-height: 58px; color: var(--project-muted); font-size: 11px; line-height: 1.6; }
+.sci-digital-card .sci-project-actions { padding-top: 20px; }
+@media(max-width:900px) { .sci-digital-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:640px) { .sci-digital-intro { grid-template-columns: 1fr; gap: 14px; } .sci-digital-grid { grid-template-columns: 1fr; } .sci-digital-card > p { min-height: 0; } }
