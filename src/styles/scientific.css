@@ -220,3 +220,10 @@ html.atlas-on, html.atlas-on body { background: #f7f8f6; }
 @media(prefers-reduced-motion:reduce) {
  .sci-project-card,.sci-project-media img { transition: none !important; }
 }
+
+
+.atlas .sci-projects { --rule: rgba(201,220,221,.16); --rule-strong: rgba(201,220,221,.32); --ink: #edf2ef; --ink-soft: #9aabb1; --ink-faint: #9aabb1; --signal: #72c9bd; }
+.sci-projects .sci-project-card .a-label { color: var(--project-muted); }
+.sci-projects .sci-project-card .sci-method-label { color: var(--project-accent) !important; }
+.sci-projects .sci-project-card .sci-disclosure-label { color: var(--project-accent); }
+.sci-projects .sci-project-card .a-mono { color: var(--project-muted); }
