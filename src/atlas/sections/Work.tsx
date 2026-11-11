@@ -1,7 +1,6 @@
 import { Fragment } from 'react';
 import { plates, mapById, redacted } from '@/data/portfolio';
 import { projectsFull } from '@/data/legacy';
-import { pravahaProjects } from '@/data/portfolio';
 import { Disclosure, MaskLines, PlateHead, Reveal, pressable, useLightbox } from '../ui';
 import { HYDROCAST_LINKS } from '@/lib/hydrocast';
 
@@ -30,7 +29,6 @@ const Cols = ({ d }: { d: any }) => (
 const ProjectCard = ({ p, i, open }: { p: typeof plates[number]; i: number; open: (id: string) => void }) => {
   const map = mapById(projectImages[p.id]);
   const detail = projectsFull[detailIdx[p.id]];
-  const repo = p.id === 'koyna' ? 'https://github.com/007-Wik' : '';
   return (
     <article className="sci-project-card">
       <button className="sci-project-media" onClick={() => open(map.id)} aria-label={`Open ${map.title}`} data-cursor="Inspect result">
@@ -46,7 +44,6 @@ const ProjectCard = ({ p, i, open }: { p: typeof plates[number]; i: number; open
         <div className="sci-project-tools">{p.spec[0][1].split(' · ').slice(0, 4).map((tool) => <span key={tool}>{tool}</span>)}</div>
         <div className="sci-project-actions">
           <button type="button" onClick={() => open(map.id)}>View result image ↗</button>
-          {repo && <a href={repo} target="_blank" rel="noreferrer">Research repositories ↗</a>}
         </div>
         <Disclosure head={<span className="sci-disclosure-label">Method, datasets & detailed results</span>}>
           <Cols d={detail} />
