@@ -125,13 +125,6 @@ export default function AtlasShell({ children, variant = 'personal', nav, brand,
           <Link to={cta.to} className="a-btn solid" style={{ marginTop: 'auto', justifyContent: 'center' }}><span>{cta.label} ↗</span></Link>
         </div>
       )}
-
-      <aside className="a-gauge" aria-hidden="true">
-        <span ref={readoutRef}>0.0</span>
-        <div className="tube"><div className="fill" ref={fillRef} /><div className="bob" ref={bobRef} /></div>
-        <span>m</span>
-      </aside>
-
       <main id="main" style={{ position: 'relative', zIndex: 2, ...(colors as object) }}>{children}</main>
     </div>
   );
